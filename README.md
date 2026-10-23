@@ -17,6 +17,10 @@ It runs as its own Emacs instance, so it does not touch any Emacs configuration 
    brew install git node
    ```
 
+   If Homebrew already had an older `gcc`, also run `brew upgrade gcc`. Emacs+ compiles packages natively with its `libgccjit`, which needs the `gcc` of the same version; a mismatch shows up as `error invoking gcc driver` warnings on the first start.
+
+   If you will use Codex, also run `brew install coreutils`. agent-log builds the Codex session catalog with `timeout` or `gtimeout`, which macOS lacks; without them its session browser and search list no Codex sessions.
+
    Any other Emacs 30 or later installed as `/Applications/Emacs.app` works too, such as `brew install --cask emacs`, but only Emacs+ can hide the window's title bar.
 
    Optionally, install the fonts Agent Emacs is designed around. Without them it uses Menlo and a mode line without icons.
