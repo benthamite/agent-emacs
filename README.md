@@ -87,6 +87,21 @@ Put your own settings in `~/.config/agent-emacs/user.el`. It is loaded last and 
 
 See the [`agent` manual](https://github.com/benthamite/agent) for every option.
 
+## Control sessions from your phone
+
+Agent Emacs can serve a page that lists your sessions and lets you read their output, reply, send keys, and start, restart or exit sessions from your phone. It is off by default. It works over [Tailscale](https://tailscale.com), which must be installed and logged in on both the Mac and the phone, in the same tailnet.
+
+1. Add this line to `~/.config/agent-emacs/user.el` and restart Agent Emacs:
+
+   ```elisp
+   (agent-remote-mode 1)
+   ```
+
+2. Find the Mac's Tailscale address with `tailscale ip -4` (it starts with `100.`).
+3. On the phone, open `http://<that address>:8787/` in a browser, or install the Android app and enter the address when it asks.
+
+Only devices in your tailnet can reach the page, and there is no other login, so never share your tailnet with people you would not hand your Mac to. The Android app is built from the `android/` directory of the [`agent`](https://github.com/benthamite/agent) package; see its manual for details.
+
 ## What is included
 
 - **Agents**: [agent](https://github.com/benthamite/agent), [claude-code.el](https://github.com/stevemolitor/claude-code.el), [monet](https://github.com/stevemolitor/monet) (lets Claude Code open diffs and files in Emacs), [codex](https://github.com/benthamite/codex), [agent-log](https://github.com/benthamite/agent-log) (readable logs of past sessions), [eat](https://codeberg.org/akib/emacs-eat) (terminal).
