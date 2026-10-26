@@ -25,7 +25,10 @@ cp "$repo/early-init.el" "$repo/init.el" "$repo/lockfile.el" "$work/dist/"
 # Skip the interactive first-run prompt; agent-setup is run below.
 touch "$work/dist/var/setup-done"
 
-HOME="$work/home" "$emacs" --fg-daemon="$name" --init-directory "$work/dist" \
+# Unset the tools' config homes too: agent-setup links its skills into
+# them, and inherited values would point at the real ones.
+env -u CLAUDE_CONFIG_DIR -u CODEX_HOME HOME="$work/home" \
+  "$emacs" --fg-daemon="$name" --init-directory "$work/dist" \
   >"$work/daemon.log" 2>&1 &
 
 ready=
