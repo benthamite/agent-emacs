@@ -98,9 +98,9 @@ Agent Emacs can serve a page that lists your sessions and lets you read their ou
    ```
 
 2. Find the Mac's Tailscale address with `tailscale ip -4` (it starts with `100.`).
-3. On the phone, open `http://<that address>:8787/` in a browser, or install the Android app and enter the address when it asks.
+3. On the phone, open `http://<that address>:8787/` in a browser, or install the [Android app](https://github.com/benthamite/agent/releases/latest/download/agent-remote.apk) and enter the address when it asks.
 
-Only devices in your tailnet can reach the page, and there is no other login, so never share your tailnet with people you would not hand your Mac to. The Android app is built from the `android/` directory of the [`agent`](https://github.com/benthamite/agent) package; see its manual for details.
+Only devices in your tailnet can reach the page, and there is no other login, so never share your tailnet with people you would not hand your Mac to. The Android app is built from the `android/` directory of the [`agent`](https://github.com/benthamite/agent) package; see its manual to build it yourself.
 
 ## What is included
 
