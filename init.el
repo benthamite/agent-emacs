@@ -330,6 +330,33 @@ Also set `exec-path' from PATH."
    ("M-s l" . consult-line)
    ("s-f" . consult-line)))
 
+;;;; Dired
+
+(use-package dired
+  :ensure nil
+  :hook
+  ;; Start with file names alone; `(' shows the details.
+  (dired-mode . dired-hide-details-mode)
+  (dired-mode . hl-line-mode)
+  :config
+  ;; GNU `ls', from coreutils, can list directories first.
+  (when (executable-find "gls")
+    (setq insert-directory-program "gls"
+          dired-use-ls-dired t
+          dired-listing-switches
+          "-AGFhlv --group-directories-first --time-style=long-iso")))
+
+(defun agent-emacs-dired-icons ()
+  "Show icons in Dired when their font is installed (see the README).
+Without the font they would show as empty boxes."
+  (when (member "Symbols Nerd Font Mono" (font-family-list))
+    (nerd-icons-dired-mode 1)))
+
+(use-package nerd-icons-dired
+  :commands nerd-icons-dired-mode
+  :hook
+  (dired-mode . agent-emacs-dired-icons))
+
 ;;;; Git and Markdown
 
 (use-package transient)

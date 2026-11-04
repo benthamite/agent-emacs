@@ -207,6 +207,19 @@
                        :id nerd-icons :type git :protocol https :inherit t
                        :depth treeless :ref
                        "17faac7977242b470732efd417d3bcc8eb5a830e"))
+ (nerd-icons-dired :source "elpaca-menu-lock-file" :recipe
+                   (:package "nerd-icons-dired" :repo
+                             "rainstormstudio/nerd-icons-dired" :fetcher github
+                             :files
+                             ("*.el" "*.el.in" "dir" "*.info" "*.texi" "*.texinfo"
+                              "doc/dir" "doc/*.info" "doc/*.texi" "doc/*.texinfo"
+                              "lisp/*.el" (:exclude ".dir-locals.el" "test.el"
+                                                    "tests.el" "*-test.el"
+                                                    "*-tests.el" "LICENSE"
+                                                    "README*" "*-pkg.el"))
+                             :source "MELPA" :id nerd-icons-dired :type git
+                             :protocol https :inherit t :depth treeless :ref
+                             "104acd8879528b8115589f35f1bbcbe231ad732f"))
  (orderless :source "elpaca-menu-lock-file" :recipe
             (:package "orderless" :repo "oantolin/orderless" :fetcher github
                       :files

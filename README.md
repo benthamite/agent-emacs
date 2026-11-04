@@ -58,6 +58,7 @@ To start Agent Emacs from Spotlight or the Dock, create an app around the launch
 | `C-c w` | Jump to the next session waiting for you |
 | `C-c c` | Claude Code commands |
 | `C-x g` | Git status (Magit) |
+| `C-x d` | Browse files (Dired); `(` shows or hides file details |
 | `C-x p f` | Open a file in the current project |
 
 `C-c` means Control-c; `M-x` means Option-x. `C-g` cancels anything. Cmd-C, Cmd-V, Cmd-Z and Cmd-S work as in any Mac app. Under Emacs+ the window has no title bar; Cmd-Q quits. After a prefix such as `C-x`, wait a moment and a list of what can follow appears. `M-x agent-emacs-welcome` shows the key overview again.
@@ -121,7 +122,7 @@ Only devices in your tailnet can reach the page, and there is no other login, so
 
 - **Agents**: [agent](https://github.com/benthamite/agent), [claude-code.el](https://github.com/stevemolitor/claude-code.el), [monet](https://github.com/stevemolitor/monet) (lets Claude Code open diffs and files in Emacs), [codex](https://github.com/benthamite/codex), [agent-log](https://github.com/benthamite/agent-log) (readable logs of past sessions), [eat](https://codeberg.org/akib/emacs-eat) (terminal).
 - **Editing**: [vertico](https://github.com/minad/vertico), [orderless](https://github.com/oantolin/orderless), [marginalia](https://github.com/minad/marginalia), [corfu](https://github.com/minad/corfu), [consult](https://github.com/minad/consult), [magit](https://magit.vc), [markdown-mode](https://github.com/jrblevin/markdown-mode), [alert](https://github.com/jwiegley/alert).
-- **Appearance**: [doom-modeline](https://github.com/seagle0128/doom-modeline) (mode line, including each session's model, effort and account), [spacious-padding](https://github.com/protesilaos/spacious-padding), the tinted Modus themes.
+- **Appearance**: [doom-modeline](https://github.com/seagle0128/doom-modeline) (mode line, including each session's model, effort and account), [spacious-padding](https://github.com/protesilaos/spacious-padding), [nerd-icons-dired](https://github.com/rainstormstudio/nerd-icons-dired) (icons in Dired), the tinted Modus themes.
 - **Built in**: Modus themes, which-key, project.el, recent files, history and cursor-position saving.
 
 Everything is in two short files, [`early-init.el`](early-init.el) and [`init.el`](init.el).
