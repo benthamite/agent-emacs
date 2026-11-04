@@ -358,7 +358,51 @@ Also set `exec-path' from PATH."
   (eat-term-name "xterm-256color")
   (eat-kill-buffer-on-exit t)
   :hook
-  (eat-mode . agent-emacs-use-strict-monospace-font))
+  (eat-mode . agent-emacs-use-strict-monospace-font)
+  (eat-mode . agent-emacs-disable-line-spacing)
+  :config
+  ;; `eat' only lightens the weight of faint text, which leaves Claude Code's
+  ;; suggested prompt looking like something you typed.
+  (set-face-attribute 'eat-term-faint nil :inherit 'shadow))
+
+(defun agent-emacs-disable-line-spacing ()
+  "Turn off line spacing in the current terminal buffer.
+`eat' works out mouse rows from the font height alone, so the spacing
+would make hovers and clicks land on the wrong row further down."
+  (setq-local line-spacing nil))
+
+(defun agent-emacs-resize-terminal-after-zoom ()
+  "Fit the current terminal to the window after a zoom.
+Zooming changes how many characters fit without changing the window, so
+nothing else tells `eat' to redraw at the new width."
+  (when (derived-mode-p 'eat-mode)
+    (window--adjust-process-windows)))
+
+(add-hook 'text-scale-mode-hook #'agent-emacs-resize-terminal-after-zoom)
+
+(defconst agent-emacs-terminal-wheel-divisor 2
+  "Forward one in this many mouse wheel events to a terminal program.
+A trackpad gesture sends many events and programs scroll several lines
+for each, which scrolls far too fast.")
+
+(defvar-local agent-emacs-terminal-wheel-count 0
+  "Mouse wheel events seen in this terminal since one was last forwarded.")
+
+(defun agent-emacs-terminal-slow-wheel ()
+  "Forward only some mouse wheel events to the current terminal's program."
+  (interactive)
+  (setq agent-emacs-terminal-wheel-count (1+ agent-emacs-terminal-wheel-count))
+  (when (>= agent-emacs-terminal-wheel-count agent-emacs-terminal-wheel-divisor)
+    (setq agent-emacs-terminal-wheel-count 0)
+    (eat-self-input 1 last-input-event)))
+
+(with-eval-after-load 'eat
+  (dolist (map (list eat--mouse-click-mode-map
+                     eat--mouse-modifier-click-mode-map))
+    (dolist (key '("<wheel-up>" "<wheel-down>"
+                   "<double-wheel-up>" "<double-wheel-down>"
+                   "<triple-wheel-up>" "<triple-wheel-down>"))
+      (keymap-set map key #'agent-emacs-terminal-slow-wheel))))
 
 (defun agent-emacs-use-strict-monospace-font ()
   "Use Iosevka Fixed in the current buffer when Iosevka is the default font.
@@ -367,6 +411,79 @@ wrapping in a terminal; Iosevka Fixed keeps every character to one cell."
   (when (and (equal (face-attribute 'default :family) "Iosevka")
              (member "Iosevka Fixed" (font-family-list)))
     (face-remap-add-relative 'default :family "Iosevka Fixed")))
+
+(defun agent-emacs-escape-quit ()
+  "Like `keyboard-escape-quit', but never delete other windows."
+  (interactive)
+  (let ((buffer-quit-function (or buffer-quit-function #'ignore)))
+    (keyboard-escape-quit)))
+
+(keymap-global-set "ESC ESC ESC" #'agent-emacs-escape-quit)
+
+;;;; Mac editing keys in Claude chats
+
+(defconst agent-emacs-chat-key-sequences
+  '(("M-<left>" . "\eb")
+    ("M-<right>" . "\ef")
+    ("s-<left>" . "\C-a")
+    ("s-<right>" . "\C-e")
+    ("s-<backspace>" . "\C-u")
+    ("s-z" . "\C-_")
+    ("C-z" . "\C-_"))
+  "Keys in a Claude chat and the bytes each sends to Claude Code.
+Without these, the keys run Emacs commands that move Emacs's point but
+not the cursor of Claude Code's input box.  `C-z' sends undo because the
+suspend it would otherwise trigger leaves no shell to resume from.")
+
+(defun agent-emacs-chat-send (sequence)
+  "Return a command that sends SEQUENCE to the current chat's terminal."
+  (lambda ()
+    (interactive)
+    (eat-term-send-string eat-terminal sequence)))
+
+(defvar agent-emacs-chat-keymap
+  (let ((map (make-sparse-keymap)))
+    (pcase-dolist (`(,key . ,sequence) agent-emacs-chat-key-sequences)
+      (keymap-set map key (agent-emacs-chat-send sequence)))
+    ;; Sent on one press; `eat' otherwise waits for a second as a Meta prefix.
+    (keymap-set map "<escape>" #'claude-code-send-escape)
+    map)
+  "Keys that apply in the semi-char input mode of a Claude chat.")
+
+(defun agent-emacs-setup-chat-keys ()
+  "Give the current Claude chat the Mac editing keys.
+They override `eat' in this buffer alone, and only in its semi-char input
+mode, so Codex terminals and other `eat' buffers keep their own keys."
+  (set-keymap-parent agent-emacs-chat-keymap eat-semi-char-mode-map)
+  (setq-local minor-mode-overriding-map-alist
+              (cons (cons 'eat--semi-char-mode agent-emacs-chat-keymap)
+                    minor-mode-overriding-map-alist)))
+
+(add-hook 'claude-code-start-hook #'agent-emacs-setup-chat-keys)
+
+(defun agent-emacs-chat-click-to-cursor (orig &rest args)
+  "Move a Claude chat's cursor to a plain click on its line, else call ORIG.
+ARGS are passed to ORIG.  Claude Code asks for mouse events but ignores
+clicks in its input box, so this turns the click into arrow keys.  A
+click on another line of a multi-line input still goes to Claude Code."
+  (let* ((event last-input-event)
+         (pos (and (mouse-event-p event)
+                   (eq (event-basic-type event) 'mouse-1)
+                   (null (seq-difference (event-modifiers event)
+                                         '(click down double triple drag)))
+                   (claude-code--buffer-p (current-buffer))
+                   (posn-point (event-start event))))
+         (cursor (and pos
+                      (bound-and-true-p eat-terminal)
+                      (marker-position (eat-term-display-cursor eat-terminal)))))
+    (if (and cursor (= (line-number-at-pos pos) (line-number-at-pos cursor)))
+        (when (and (memq 'click (event-modifiers event)) (/= pos cursor))
+          (eat-term-input-event eat-terminal (abs (- pos cursor))
+                                (if (> pos cursor) 'right 'left)))
+      (apply orig args))))
+
+(with-eval-after-load 'eat
+  (advice-add 'eat-self-input :around #'agent-emacs-chat-click-to-cursor))
 
 ;;;; AI agents
 

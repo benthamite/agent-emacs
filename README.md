@@ -64,6 +64,19 @@ To start Agent Emacs from Spotlight or the Dock, create an app around the launch
 
 Agent Emacs starts with the window split into two columns, so that two sessions fit side by side: the left one is empty, ready for your first session, and the right one lists the main keys. Sessions also appear as tabs along the top, coloured when they are waiting for input, and you get a notification when an agent finishes.
 
+## Your first hour
+
+1. Press `C-x C-f`, open any file in the project you want to work on, and press `C-c a n`. The session starts in that file's project, or in its folder if it is not in a project. There is no folder prompt, so open something in the right place first.
+2. Type your request. A tab along the top shows the session's state; the green colour means it stopped and is waiting for you, whether it needs an answer or finished some time ago.
+3. Press `C-c w` to reach the next session waiting for you, or `C-c s` to choose one.
+4. To finish, press `C-c a x`. It runs your closing skills, if you set any, and then closes the session.
+
+Three things surprise most people at first:
+
+- **Past chats open read-only.** `C-c a l` opens the history menu, for browsing and searching past chats. To continue one, press `C-c a r`, which resumes a session.
+- **`C-x p p` lists only projects you have visited.** It starts empty and fills as you open files in Git repositories. To add a whole folder of them at once, use `M-x project-remember-projects-under`.
+- **Keys in a chat go to the agent.** The editing keys work as in a Mac text field: Option and Cmd arrows, Cmd-Backspace, Cmd-Z, and a single Esc to interrupt. Clicking on the line with the cursor moves the cursor there.
+
 ## Update
 
 ```sh
