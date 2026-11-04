@@ -169,23 +169,29 @@
 ;; Apps launched from the Dock do not see the PATH set in the shell, so
 ;; `claude', `codex', `node' and `git' would not be found.  Ask the
 ;; user's login shell for its PATH and use it.
-(defun agent-emacs-import-shell-path ()
-  "Set PATH and `exec-path' from the user's interactive login shell."
+(defconst agent-emacs-shell-variables '("PATH" "CODEX_HOME" "CLAUDE_CONFIG_DIR")
+  "Variables to take from the user's login shell, where they are set.")
+
+(defun agent-emacs-import-shell-environment ()
+  "Set `agent-emacs-shell-variables' from the user's interactive login shell.
+Also set `exec-path' from PATH."
   (let* ((shell (or (getenv "SHELL") "/bin/zsh"))
+         (script (mapconcat (lambda (name)
+                              (format "printf '__ENV__%s=%%s\\n' \"$%s\"" name name))
+                            agent-emacs-shell-variables "; "))
          (output (with-temp-buffer
-                   (when (zerop (call-process shell nil t nil "-l" "-i" "-c"
-                                              "printf '__PATH__%s' \"$PATH\""))
-                     (buffer-string))))
-         (path (and output
-                    (string-match "__PATH__\\(.*\\)" output)
-                    (match-string 1 output))))
-    (when (and path (not (string-empty-p path)))
-      (setenv "PATH" path)
-      (setq exec-path (append (parse-colon-path path)
-                              (list exec-directory))))))
+                   (when (zerop (call-process shell nil t nil "-l" "-i" "-c" script))
+                     (buffer-string)))))
+    (dolist (name agent-emacs-shell-variables)
+      (when (and output
+                 (string-match (format "__ENV__%s=\\(.*\\)" name) output)
+                 (not (string-empty-p (match-string 1 output))))
+        (setenv name (match-string 1 output))))
+    (setq exec-path (append (parse-colon-path (getenv "PATH"))
+                            (list exec-directory)))))
 
 (when (memq window-system '(mac ns))
-  (agent-emacs-import-shell-path))
+  (agent-emacs-import-shell-environment))
 
 ;;;; Appearance
 

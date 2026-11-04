@@ -85,6 +85,8 @@ Put your own settings in `~/.config/agent-emacs/user.el`. It is loaded last and 
                               ("work"     . "~/.claude-work")))
 ```
 
+The launcher starts Emacs from a clean environment, so sessions do not inherit variables from the terminal app you ran it in. `PATH`, `CODEX_HOME` and `CLAUDE_CONFIG_DIR` come from your login shell.
+
 See the [`agent` manual](https://github.com/benthamite/agent) for every option.
 
 ## Control sessions from your phone

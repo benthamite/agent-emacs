@@ -2,7 +2,23 @@
 # Start Agent Emacs as its own Emacs instance, separate from any other
 # Emacs configuration on this machine.
 dir=$(cd "$(dirname "$0")/.." && pwd)
+
+# Start from a clean environment, as a launch from the Dock would, so that
+# sessions do not inherit the variables of whatever terminal app ran this.
+# init.el then takes PATH and the agents' config homes from the login shell.
+clean_env() {
+  exec env -i \
+    ${HOME+"HOME=$HOME"} ${USER+"USER=$USER"} ${LOGNAME+"LOGNAME=$LOGNAME"} \
+    ${SHELL+"SHELL=$SHELL"} ${PATH+"PATH=$PATH"} ${TMPDIR+"TMPDIR=$TMPDIR"} \
+    ${LANG+"LANG=$LANG"} ${LC_ALL+"LC_ALL=$LC_ALL"} ${LC_CTYPE+"LC_CTYPE=$LC_CTYPE"} \
+    ${SSH_AUTH_SOCK+"SSH_AUTH_SOCK=$SSH_AUTH_SOCK"} \
+    ${DISPLAY+"DISPLAY=$DISPLAY"} ${WAYLAND_DISPLAY+"WAYLAND_DISPLAY=$WAYLAND_DISPLAY"} \
+    ${XDG_RUNTIME_DIR+"XDG_RUNTIME_DIR=$XDG_RUNTIME_DIR"} \
+    ${__CF_USER_TEXT_ENCODING+"__CF_USER_TEXT_ENCODING=$__CF_USER_TEXT_ENCODING"} \
+    "$@"
+}
+
 if [ "$(uname)" = Darwin ] && [ -d /Applications/Emacs.app ]; then
-  exec open -n -a /Applications/Emacs.app --args --init-directory "$dir" "$@"
+  clean_env open -n -a /Applications/Emacs.app --args --init-directory "$dir" "$@"
 fi
-exec emacs --init-directory "$dir" "$@"
+clean_env emacs --init-directory "$dir" "$@"
