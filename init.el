@@ -253,8 +253,10 @@ Also set `exec-path' from PATH."
         ((member "Menlo" (font-family-list))
          (set-face-attribute 'default nil :family "Menlo" :height 140))))
 
-;; The tab bar lists the agent sessions and nothing else.
-(setq tab-bar-format nil)
+;; The tab bar lists the agent sessions and nothing else.  Keep one entry
+;; until `agent-tab-bar-mode' adds them: redisplay shrinks a tab bar with
+;; nothing to show to zero lines, and it never grows back by itself.
+(setq tab-bar-format '(tab-bar-format-align-right))
 (tab-bar-mode 1)
 
 (setq-default line-spacing 2)

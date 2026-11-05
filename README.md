@@ -63,7 +63,7 @@ To start Agent Emacs from Spotlight or the Dock, create an app around the launch
 
 `C-c` means Control-c; `M-x` means Option-x. `C-g` cancels anything. Cmd-C, Cmd-V, Cmd-Z and Cmd-S work as in any Mac app. Under Emacs+ the window has no title bar; Cmd-Q quits. After a prefix such as `C-x`, wait a moment and a list of what can follow appears. `M-x agent-emacs-welcome` shows the key overview again.
 
-Agent Emacs starts with the window split into two columns, so that two sessions fit side by side: the left one is empty, ready for your first session, and the right one lists the main keys. Sessions also appear as tabs along the top, coloured when they are waiting for input, and you get a notification when an agent finishes.
+Agent Emacs starts with the window split into two columns, so that two sessions fit side by side: the left one is empty, ready for your first session, and the right one lists the main keys. Sessions also appear as tabs along the top, coloured when they are waiting for input, and you get a notification when an agent finishes. The bar stays there, empty, until your first session.
 
 ## Your first hour
 
