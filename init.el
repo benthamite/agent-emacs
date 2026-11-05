@@ -392,7 +392,9 @@ Without the font they would show as empty boxes."
   :config
   ;; `eat' only lightens the weight of faint text, which leaves Claude Code's
   ;; suggested prompt looking like something you typed.
-  (set-face-attribute 'eat-term-faint nil :inherit 'shadow))
+  (set-face-attribute 'eat-term-faint nil :inherit 'shadow)
+  ;; Plain `yank' would put the text in the buffer, not send it to the program.
+  (keymap-set eat-semi-char-mode-map "s-v" #'eat-yank))
 
 (defun agent-emacs-disable-line-spacing ()
   "Turn off line spacing in the current terminal buffer.

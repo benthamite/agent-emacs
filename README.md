@@ -76,7 +76,7 @@ Three things surprise most people at first:
 
 - **Past chats open read-only.** `C-c a l` opens the history menu, for browsing and searching past chats. To continue one, press `C-c a r`, which resumes a session.
 - **`C-x p p` lists only projects you have visited.** It starts empty and fills as you open files in Git repositories. To add a whole folder of them at once, use `M-x project-remember-projects-under`.
-- **Keys in a chat go to the agent.** The editing keys work as in a Mac text field: Option and Cmd arrows, Cmd-Backspace, Cmd-Z, and a single Esc to interrupt. Clicking on the line with the cursor moves the cursor there.
+- **Keys in a chat go to the agent.** The editing keys work as in a Mac text field: Option and Cmd arrows, Cmd-Backspace, Cmd-V, Cmd-Z, and a single Esc to interrupt. Clicking on the line with the cursor moves the cursor there.
 
 ## Update
 
