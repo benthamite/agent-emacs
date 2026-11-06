@@ -131,6 +131,7 @@
   (mouse-wheel-progressive-speed nil)
   (enable-recursive-minibuffers t)
   (read-extended-command-predicate #'command-completion-default-include-p)
+  (completions-detailed t)
   (help-window-select t)
   (kill-do-not-save-duplicates t)
   (save-interprogram-paste-before-kill t)
@@ -138,11 +139,14 @@
   (auto-revert-verbose nil)
   (dired-kill-when-opening-new-dired-buffer t)
   (dired-dwim-target t)
+  (dired-auto-revert-buffer t)
+  (mouse-drag-and-drop-region t)
   (vc-follow-symlinks t)
   :config
   ;; Agents edit files behind Emacs's back: show their changes at once.
   (global-auto-revert-mode 1)
   (delete-selection-mode 1)
+  (electric-pair-mode 1)
   (recentf-mode 1)
   (savehist-mode 1)
   (save-place-mode 1)
