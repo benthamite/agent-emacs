@@ -77,7 +77,7 @@ Agent Emacs starts with the window split into two columns, so that two sessions 
 ## Your first hour
 
 1. Press `C-x C-f`, open any file in the project you want to work on, and press `H-e n`. The session starts in that file's project, or in its folder if it is not in a project. There is no folder prompt, so open something in the right place first.
-2. Type your request. A tab along the top shows the session's state; the green colour means it stopped and is waiting for you, whether it needs an answer or finished some time ago.
+2. Type your request and press `RET` to send it; `S-RET` starts a new line instead. A tab along the top shows the session's state; the green colour means it stopped and is waiting for you, whether it needs an answer or finished some time ago.
 3. Press `H-e w` to reach the next session waiting for you, or `H-e s` to choose one.
 4. To finish, press `H-e x`. It runs your closing skills, if you set any, and then closes the session.
 

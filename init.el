@@ -786,11 +786,19 @@ click on another line of a multi-line input still goes to Claude Code."
      ("H-e s" . "switch to a session")
      ("H-e w" . "go to the next session waiting for you")
      ("H-e x" . "end this session")
+     ("H-e r" . "resume a past session")
+     ("H-e l" . "read past sessions")
      ("H-e" . "all agent commands"))
+    ("In a session"
+     ("RET" . "send the prompt")
+     ("S-RET" . "start a new line")
+     ("Esc" . "interrupt the agent"))
     ("Files"
      ("C-x C-f" . "open a file")
      ("C-x p f" . "open a file in this project")
-     ("C-x b" . "switch to an open file"))
+     ("C-x b" . "switch to an open file")
+     ("C-x k" . "close this file")
+     ("C-x p p" . "switch to another project you have visited"))
     ("Programs"
      ("C-x d" . "file browser (Dired)")
      ("C-x g" . "Git (Magit)")
@@ -798,7 +806,8 @@ click on another line of a multi-line input still goes to Claude Code."
     ("Search"
      ("C-s" . "search forward in this file")
      ("C-r" . "search backward in this file")
-     ("M-s r" . "search this project"))
+     ("M-s r" . "search this project")
+     ("M-g g" . "go to a line number"))
     ("Windows"
      ("C-x 3" . "split side by side")
      ("C-x 2" . "split top and bottom")
@@ -806,7 +815,9 @@ click on another line of a multi-line input still goes to Claude Code."
      ("C-x 0" . "close this window")
      ("C-x o" . "switch to the other window"))
     ("When stuck"
-     ("C-g" . "cancel whatever is happening")))
+     ("C-g" . "cancel whatever is happening")
+     ("M-x" . "run any command by name")
+     ("C-h k" . "find out what a key does, by pressing it")))
   "The welcome screen, as (HEADING (KEY . DESCRIPTION)...).")
 
 (defconst agent-emacs-welcome-key-width
