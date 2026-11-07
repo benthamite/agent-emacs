@@ -43,10 +43,10 @@ install_emacs() {
       die "$emacs_app is Emacs $version; Agent Emacs needs Emacs 30 or later."
     return
   fi
-  # Emacs+ offers a prebuilt app only for Apple Silicon and macOS 15 or
+  # Emacs Plus offers a prebuilt app only for Apple Silicon and macOS 15 or
   # later; elsewhere, the standard Emacs app works too.
   if [ "$(uname -m)" = arm64 ] && [ "$(sw_vers -productVersion | cut -d. -f1)" -ge 15 ]; then
-    say "Installing Emacs+"
+    say "Installing Emacs Plus"
     # Homebrew 7 and later loads other people's taps only once trusted.
     if brew help trust >/dev/null 2>&1; then
       brew trust --tap d12frosted/emacs-plus
@@ -58,12 +58,12 @@ install_emacs() {
   fi
 }
 
-# Emacs+ compiles packages with the gcc it was built against, so an older
+# Emacs Plus compiles packages with the gcc it was built against, so an older
 # gcc left from before makes every package fail to compile.
 update_gcc() {
   if brew list --cask emacs-plus-app >/dev/null 2>&1 &&
      [ -n "$(brew outdated --formula --quiet gcc 2>/dev/null)" ]; then
-    say "Updating gcc to match Emacs+"
+    say "Updating gcc to match Emacs Plus"
     brew upgrade gcc
   fi
 }

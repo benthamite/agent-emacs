@@ -1,13 +1,6 @@
 # Agent Emacs
 
-```
-    _    ____ _____ _   _ _____
-   / \  / ___| ____| \ | |_   _|
-  / _ \| |  _|  _| |  \| | | |
- / ___ \ |_| | |___| |\  | | |
-/_/   \_\____|_____|_| \_| |_|
-         E  M  A  C  S
-```
+<p align="center"><img src="banner.svg" alt="Agent Emacs"></p>
 
 An Emacs set up for one job: running AI coding agents — [Claude Code](https://code.claude.com) and [Codex](https://developers.openai.com/codex) — side by side, with every session one keystroke away.
 
@@ -28,7 +21,7 @@ It installs whatever is missing, asks to log you in to Claude Code and Codex, an
 <details>
 <summary>What the installer does</summary>
 
-- Installs [Emacs+](https://github.com/d12frosted/homebrew-emacs-plus) on an Apple Silicon Mac with macOS 15 or later, and the standard Emacs app elsewhere. An Emacs 30 or later already in `/Applications` is kept.
+- Installs [Emacs Plus](https://github.com/d12frosted/homebrew-emacs-plus) on an Apple Silicon Mac with macOS 15 or later, and the standard Emacs app elsewhere. An Emacs 30 or later already in `/Applications` is kept.
 - Installs Claude Code, Codex, `coreutils` and the Iosevka and Symbols Nerd fonts, unless you already have them.
 - Puts Agent Emacs in `~/.config/agent-emacs`, an `Agent Emacs` app in `~/Applications`, and the `agent-emacs` command in `~/.local/bin` when that folder is on your `PATH`.
 
