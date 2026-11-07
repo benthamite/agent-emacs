@@ -208,6 +208,9 @@ its binding."
            ("H-f" . find-file)
            ("H-b" . consult-buffer)
            ("H-q" . kill-current-buffer)
+           ("H-k" . describe-key)
+           ("H-<up>" . beginning-of-buffer)
+           ("H-<down>" . end-of-buffer)
            ("H-d" . dired)
            ("H-o" . other-window)
            ("H-w" . delete-window)
@@ -808,8 +811,7 @@ click on another line of a multi-line input still goes to Claude Code."
      ("H-e" . "all agent commands"))
     ("In a session"
      ("RET" . "send the prompt")
-     ("S-RET" . "start a new line")
-     ("Esc" . "interrupt the agent"))
+     ("S-RET" . "start a new line"))
     ("Files"
      ("H-f" . "open a file")
      ("H-b" . "switch to an open file")
@@ -819,16 +821,15 @@ click on another line of a multi-line input still goes to Claude Code."
      ("H-g" . "Git (Magit)")
      ("H-t" . "terminal in this project"))
     ("Search"
-     ("C-s" . "search forward in this file")
-     ("C-r" . "search backward in this file")
-     ("H-p" . "search this project"))
+     ("C-s" . "search in this file")
+     ("H-p" . "search in this project"))
     ("Windows"
      ("H-o" . "switch to the other window")
      ("H-w" . "close this window"))
     ("When stuck"
      ("Esc" . "cancel whatever is happening")
      ("M-x" . "run any command by name")
-     ("C-h k" . "find out what a key does, by pressing it")))
+     ("H-k" . "find out what a key does, by pressing it")))
   "The welcome screen, as (HEADING (KEY . DESCRIPTION)...).")
 
 (defconst agent-emacs-welcome-key-width
