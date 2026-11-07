@@ -208,6 +208,9 @@ its binding."
            ("H-f" . find-file)
            ("H-b" . consult-buffer)
            ("H-q" . kill-current-buffer)
+           ("H-d" . dired)
+           ("H-o" . other-window)
+           ("H-w" . delete-window)
            ("H-v" . yank)
            ("H-C" . kill-ring-save)
            ("H-z" . undo-only)
@@ -548,7 +551,8 @@ Without the font they would show as empty boxes."
 
 (use-package magit
   :bind
-  ("C-x g" . magit-status))
+  (("C-x g" . magit-status)
+   ("H-g" . magit-status)))
 
 (use-package markdown-mode
   :mode ("\\.md\\'" . gfm-mode))
@@ -570,8 +574,7 @@ Without the font they would show as empty boxes."
   (eat-term-name "xterm-256color")
   (eat-kill-buffer-on-exit t)
   :bind
-  (:map project-prefix-map
-        ("t" . eat-project))
+  ("H-t" . eat-project)
   :hook
   (eat-mode . agent-emacs-use-strict-monospace-font)
   (eat-mode . agent-emacs-disable-line-spacing)
@@ -810,20 +813,17 @@ click on another line of a multi-line input still goes to Claude Code."
      ("H-b" . "switch to an open file")
      ("H-q" . "close this file"))
     ("Programs"
-     ("C-x d" . "file browser (Dired)")
-     ("C-x g" . "Git (Magit)")
-     ("C-x p t" . "terminal in this project"))
+     ("H-d" . "file browser (Dired)")
+     ("H-g" . "Git (Magit)")
+     ("H-t" . "terminal in this project"))
     ("Search"
      ("C-s" . "search forward in this file")
      ("C-r" . "search backward in this file")
      ("M-s r" . "search this project")
      ("M-g g" . "go to a line number"))
     ("Windows"
-     ("C-x 3" . "split side by side")
-     ("C-x 2" . "split top and bottom")
-     ("C-x 1" . "close the other windows")
-     ("C-x 0" . "close this window")
-     ("C-x o" . "switch to the other window"))
+     ("H-o" . "switch to the other window")
+     ("H-w" . "close this window"))
     ("When stuck"
      ("C-g" . "cancel whatever is happening")
      ("M-x" . "run any command by name")

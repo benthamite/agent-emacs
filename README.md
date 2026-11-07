@@ -56,9 +56,10 @@ To start Agent Emacs from Spotlight or the Dock, create an app around the launch
 | `H-e` | Agent menu: start, resume, switch and close sessions |
 | `H-e s` | Switch to a session |
 | `H-e w` | Jump to the next session waiting for you |
-| `C-x g` | Git status (Magit) |
-| `C-x d` | Browse files (Dired); `(` shows or hides file details |
-| `C-x p t` | Open a terminal in the current project |
+| `H-g` | Git status (Magit) |
+| `H-d` | Browse files (Dired); `(` shows or hides file details |
+| `H-t` | Open a terminal in the current project |
+| `H-o` | Switch to the other window |
 | `H-f` | Open a file |
 
 The Mac keys give Emacs four of its five modifiers:
