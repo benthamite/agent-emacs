@@ -567,6 +567,9 @@ Without the font they would show as empty boxes."
   :custom
   (eat-term-name "xterm-256color")
   (eat-kill-buffer-on-exit t)
+  :bind
+  (:map project-prefix-map
+        ("t" . eat-project))
   :hook
   (eat-mode . agent-emacs-use-strict-monospace-font)
   (eat-mode . agent-emacs-disable-line-spacing)
@@ -787,9 +790,11 @@ click on another line of a multi-line input still goes to Claude Code."
     ("Files"
      ("C-x C-f" . "open a file")
      ("C-x p f" . "open a file in this project")
-     ("C-x b" . "switch to an open file")
-     ("C-x d" . "browse a folder")
-     ("C-x g" . "Git status"))
+     ("C-x b" . "switch to an open file"))
+    ("Programs"
+     ("C-x d" . "file browser (Dired)")
+     ("C-x g" . "Git (Magit)")
+     ("C-x p t" . "terminal in this project"))
     ("Search"
      ("C-s" . "search forward in this file")
      ("C-r" . "search backward in this file")
