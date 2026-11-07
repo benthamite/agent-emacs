@@ -633,13 +633,14 @@ wrapping in a terminal; Iosevka Fixed keeps every character to one cell."
              (member "Iosevka Fixed" (font-family-list)))
     (face-remap-add-relative 'default :family "Iosevka Fixed")))
 
-(defun agent-emacs-escape-quit ()
-  "Like `keyboard-escape-quit', but never delete other windows."
-  (interactive)
-  (let ((buffer-quit-function (or buffer-quit-function #'ignore)))
-    (keyboard-escape-quit)))
+(defun agent-emacs-escape-as-quit (_prompt)
+  "Return the key the Esc key stands for: \\`C-g', except in a terminal.
+Programs in a terminal need Esc itself; a Claude chat turns it into
+an interrupt on its own."
+  (if (derived-mode-p 'eat-mode) [?\e] [?\C-g]))
 
-(keymap-global-set "ESC ESC ESC" #'agent-emacs-escape-quit)
+;; Esc cancels whatever is happening, as C-g does.
+(keymap-set key-translation-map "ESC" #'agent-emacs-escape-as-quit)
 
 ;;;; Mac editing keys in Claude chats
 
@@ -825,7 +826,7 @@ click on another line of a multi-line input still goes to Claude Code."
      ("H-o" . "switch to the other window")
      ("H-w" . "close this window"))
     ("When stuck"
-     ("C-g" . "cancel whatever is happening")
+     ("Esc" . "cancel whatever is happening")
      ("M-x" . "run any command by name")
      ("C-h k" . "find out what a key does, by pressing it")))
   "The welcome screen, as (HEADING (KEY . DESCRIPTION)...).")
