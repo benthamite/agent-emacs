@@ -796,44 +796,46 @@ click on another line of a multi-line input still goes to Claude Code."
 
 (defconst agent-emacs-welcome-sections
   '(("Emacs modifiers"
-     ("C- (Control)" . "Control")
-     ("M- (Meta)" . "Option")
-     ("H- (Hyper)" . "left Command")
-     ("s- (Super)" . "right Command")
-     ("S- (Shift)" . "Shift"))
-    ("Agents"
-     ("H-e n" . "start a session in the current file's project")
-     ("H-e s" . "switch to a session")
-     ("H-e w" . "go to the next session waiting for you")
-     ("H-e x" . "end this session")
-     ("H-e r" . "resume a past session")
-     ("H-e l" . "read past sessions")
-     ("H-e" . "all agent commands"))
+     (:header "Written as" "Modifier" "Mac key")
+     ("C-" "Control" "Control")
+     ("M-" "Meta" "Option")
+     ("H-" "Hyper" "left Command")
+     ("s-" "Super" "right Command")
+     ("S-" "Shift" "Shift"))
+    ("Agent"
+     ("H-e n" "start a session in the current file's project")
+     ("H-e s" "switch to a session")
+     ("H-e w" "go to the next session waiting for you")
+     ("H-e x" "end this session")
+     ("H-e r" "resume a past session")
+     ("H-e l" "read past sessions")
+     ("H-e" "all agent commands"))
     ("In a session"
-     ("RET" . "send the prompt")
-     ("S-RET" . "start a new line"))
+     ("RET" "send the prompt")
+     ("S-RET" "start a new line"))
     ("Files"
-     ("H-f" . "open a file")
-     ("H-b" . "switch to an open file")
-     ("H-q" . "close this file"))
-    ("Programs"
-     ("H-d" . "file browser (Dired)")
-     ("H-g" . "Git (Magit)")
-     ("H-t" . "terminal in this project"))
-    ("Search"
-     ("C-s" . "search in this file")
-     ("H-p" . "search in this project"))
+     ("H-f" "open a file")
+     ("H-b" "switch to an open file")
+     ("H-q" "close this file"))
     ("Windows"
-     ("H-o" . "switch to the other window")
-     ("H-w" . "close this window"))
+     ("H-o" "switch to the other window")
+     ("H-w" "close this window"))
+    ("Search"
+     ("C-s" "search in this file")
+     ("H-p" "search in this project"))
+    ("Tools"
+     ("H-d" "file browser")
+     ("H-g" "Git")
+     ("H-t" "terminal"))
     ("When stuck"
-     ("Esc" . "cancel whatever is happening")
-     ("M-x" . "run any command by name")
-     ("H-k" . "find out what a key does, by pressing it")))
-  "The welcome screen, as (HEADING (KEY . DESCRIPTION)...).")
+     ("Esc" "cancel whatever is happening")
+     ("M-x" "run any command by name")
+     ("H-k" "find out what a key does, by pressing it")))
+  "The welcome screen, as (HEADING ROW...).
+Each ROW is (KEY TEXT...), or (:header TITLE...) for column titles.")
 
 (defconst agent-emacs-welcome-key-width
-  (+ 2 (seq-max (mapcar (lambda (entry) (string-width (car entry)))
+  (+ 2 (seq-max (mapcar (lambda (row) (string-width (car (remq :header row))))
                         (seq-mapcat #'cdr agent-emacs-welcome-sections))))
   "Width of the key column on the welcome screen: the longest key and a gap.")
 
@@ -843,7 +845,8 @@ click on another line of a multi-line input still goes to Claude Code."
   (with-current-buffer (get-buffer-create agent-emacs-welcome-buffer-name)
     (let ((inhibit-read-only t))
       (erase-buffer)
-      (insert agent-emacs-welcome-banner "\n"
+      (insert (propertize agent-emacs-welcome-banner 'face '(:height 1.3))
+              "\n"
               (propertize "M-x agent-emacs-welcome shows this screen again.\n"
                           'face 'shadow))
       (mapc #'agent-emacs-welcome-insert-section agent-emacs-welcome-sections))
@@ -854,10 +857,35 @@ click on another line of a multi-line input still goes to Claude Code."
 (defun agent-emacs-welcome-insert-section (section)
   "Insert SECTION, an element of `agent-emacs-welcome-sections'."
   (insert "\n" (propertize (car section) 'face 'bold) "\n")
-  (pcase-dolist (`(,key . ,description) (cdr section))
-    (insert "  " (propertize key 'face 'help-key-binding)
-            (make-string (- agent-emacs-welcome-key-width (string-width key)) ?\s)
-            description "\n")))
+  (let ((widths (agent-emacs-welcome-column-widths (cdr section))))
+    (dolist (row (cdr section))
+      (agent-emacs-welcome-insert-row row widths))))
+
+(defun agent-emacs-welcome-column-widths (rows)
+  "Return the width of each column of ROWS, a gap included.
+The key column is equally wide in every section, so the sections line up."
+  (let ((cells (mapcar (lambda (row) (remq :header row)) rows)))
+    (cons agent-emacs-welcome-key-width
+          (mapcar (lambda (column)
+                    (+ 2 (seq-max (mapcar (lambda (row)
+                                            (string-width (or (nth column row) "")))
+                                          cells))))
+                  (number-sequence 1 (1- (seq-max (mapcar #'length cells))))))))
+
+(defun agent-emacs-welcome-insert-row (row widths)
+  "Insert ROW of the welcome screen, padding its columns to WIDTHS."
+  (let ((header (eq (car row) :header))
+        (cells (remq :header row)))
+    (insert "  ")
+    (seq-do-indexed
+     (lambda (cell column)
+       (insert (propertize cell 'face (cond (header 'shadow)
+                                            ((= column 0) 'help-key-binding)))
+               (if (< column (1- (length cells)))
+                   (make-string (- (nth column widths) (string-width cell)) ?\s)
+                 "")))
+     cells)
+    (insert "\n")))
 
 (setq initial-buffer-choice #'agent-emacs-welcome)
 

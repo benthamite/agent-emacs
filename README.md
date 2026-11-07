@@ -65,12 +65,13 @@ To start Agent Emacs from Spotlight or the Dock, create an app around the launch
 
 The Mac keys give Emacs four of its five modifiers:
 
-| Key | Emacs modifier | Used for |
-|-----|----------------|----------|
-| Control | Control (`C-`) | `C-c` means Control-c |
-| Option | Meta (`M-`) | `M-x` means Option-x |
-| Left Command | Hyper (`H-`) | The Mac shortcuts: Cmd-C, Cmd-V, Cmd-Z and Cmd-S work as in any Mac app |
-| Right Command | Super (`s-`) | Commands of the current mode, such as `s-c` to finish a commit message and `s-k` to cancel it |
+| Written as | Modifier | Mac key | Used for |
+|------------|----------|---------|----------|
+| `C-` | Control | Control | `C-c` means Control-c |
+| `M-` | Meta | Option | `M-x` means Option-x |
+| `H-` | Hyper | Left Command | The Mac shortcuts: Cmd-C, Cmd-V, Cmd-Z and Cmd-S work as in any Mac app |
+| `s-` | Super | Right Command | Commands of the current mode, such as `s-c` to finish a commit message and `s-k` to cancel it |
+| `S-` | Shift | Shift | `S-RET` means Shift-Return |
 
 The right Option key still types accented characters, so no key gives Alt (`A-`). Esc cancels anything, as `C-g` does in other Emacs setups; in a terminal it goes to the program instead. If Emacs itself stops responding, press `C-g`. Select text as in any Mac app: Shift with the arrow keys, adding Option to go by word or Cmd to go to the end of the line or file, or drag with the mouse. Typing replaces the selection, and selected text can be dragged elsewhere. In files, an opening bracket or quote gets its closing one. Under Emacs+ the window has no title bar; `C-x C-c` quits. Not sure what comes next? Type `C-x` (or `C-c`, `C-h`…) and pause: a list of every key you can press next, and what it does, pops up. `M-x agent-emacs-welcome` shows the key overview again.
 
