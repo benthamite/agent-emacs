@@ -1,12 +1,12 @@
 ((agent :source "elpaca-menu-lock-file" :recipe
         (:source "Init file" :package "agent" :id agent :host github :repo
                  "benthamite/agent" :type git :protocol https :inherit t :depth
-                 treeless :ref "b3d16021aa631ee0d59d7c6b9bede3868c812dd8"))
+                 treeless :ref "0997633b2bf4e40c1f2aff12d8184dd98b4ae687"))
  (agent-log :source "elpaca-menu-lock-file" :recipe
             (:source "Init file" :package "agent-log" :id agent-log :host github
                      :repo "benthamite/agent-log" :type git :protocol https
                      :inherit t :depth treeless :ref
-                     "08e141e2411d17a711d3eaee485a0b9be0b7d6ee"))
+                     "f82794dfdada9d8127ee2dae46c6127a1ebacfe2"))
  (alert :source "elpaca-menu-lock-file" :recipe
         (:package "alert" :fetcher github :repo "jwiegley/alert" :files
                   ("*.el" "*.el.in" "dir" "*.info" "*.texi" "*.texinfo"
