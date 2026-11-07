@@ -72,7 +72,7 @@ The Mac keys give Emacs four of its five modifiers:
 
 The right Option key still types accented characters, so no key gives Alt (`A-`). `C-g` cancels anything. In files, an opening bracket or quote gets its closing one, and selected text can be dragged with the mouse. Under Emacs+ the window has no title bar; Cmd-Q quits. Not sure what comes next? Type `C-x` (or `C-c`, `C-h`…) and pause: a list of every key you can press next, and what it does, pops up. `M-x agent-emacs-welcome` shows the key overview again.
 
-Agent Emacs starts with the window split into two columns, so that two sessions fit side by side: the left one is empty, ready for your first session, and the right one lists the main keys. Sessions also appear as tabs along the top, coloured when they are waiting for input, and you get a notification when an agent finishes. The bar stays there, empty, until your first session.
+Agent Emacs starts with the window split into two columns, so that two sessions fit side by side: the left one is empty, ready for your first session, and the right one shows the welcome screen with the main keys. Sessions also appear as tabs along the top, coloured when they are waiting for input, and you get a notification when an agent finishes. The bar stays there, empty, until your first session.
 
 ## Your first hour
 

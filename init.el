@@ -775,12 +775,22 @@ click on another line of a multi-line input still goes to Claude Code."
   (expand-file-name "setup-done" agent-emacs-var-directory)
   "File whose existence records that first-run setup has been offered.")
 
+(defconst agent-emacs-welcome-banner
+  (concat "    _    ____ _____ _   _ _____\n"
+          "   / \\  / ___| ____| \\ | |_   _|\n"
+          "  / _ \\| |  _|  _| |  \\| | | |\n"
+          " / ___ \\ |_| | |___| |\\  | | |\n"
+          "/_/   \\_\\____|_____|_| \\_| |_|\n"
+          "         E  M  A  C  S\n")
+  "The name drawn in large letters at the top of the welcome screen.")
+
 (defconst agent-emacs-welcome-sections
   '(("Emacs modifiers"
      ("C- (Control)" . "Control")
      ("M- (Meta)" . "Option")
      ("H- (Hyper)" . "left Command")
-     ("s- (Super)" . "right Command"))
+     ("s- (Super)" . "right Command")
+     ("S- (Shift)" . "Shift"))
     ("Agents"
      ("H-e n" . "start a session in the current file's project")
      ("H-e s" . "switch to a session")
@@ -831,7 +841,7 @@ click on another line of a multi-line input still goes to Claude Code."
   (with-current-buffer (get-buffer-create agent-emacs-welcome-buffer-name)
     (let ((inhibit-read-only t))
       (erase-buffer)
-      (insert (propertize "Agent Emacs\n" 'face '(:height 1.5 :weight bold))
+      (insert agent-emacs-welcome-banner "\n"
               (propertize "M-x agent-emacs-welcome shows this screen again.\n"
                           'face 'shadow))
       (mapc #'agent-emacs-welcome-insert-section agent-emacs-welcome-sections))
