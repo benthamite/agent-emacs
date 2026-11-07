@@ -8,3 +8,4 @@
 !/init.el
 !/lockfile.el
 !/test/
+!/install.sh

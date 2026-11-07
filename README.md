@@ -8,74 +8,44 @@ It runs as its own Emacs instance, so it does not touch any Emacs configuration 
 
 ## Install (macOS)
 
-1. Install Emacs 30 or later, Git and Node. [Emacs+](https://github.com/d12frosted/homebrew-emacs-plus) is recommended; its prebuilt app installs in about a minute on an Apple Silicon Mac with macOS 15 or later:
+With [Homebrew](https://brew.sh) installed, run this in a terminal:
 
-   ```sh
-   brew trust d12frosted/emacs-plus
-   brew tap d12frosted/emacs-plus
-   brew install --cask emacs-plus-app
-   brew install git node
-   ```
+```sh
+curl -fsSL https://raw.githubusercontent.com/benthamite/agent-emacs/main/install.sh | sh
+```
 
-   If Homebrew already had an older `gcc`, also run `brew upgrade gcc`. Emacs+ compiles packages natively with its `libgccjit`, which needs the `gcc` of the same version; a mismatch shows up as `error invoking gcc driver` warnings on the first start.
+It installs whatever is missing, asks to log you in to Claude Code and Codex, and starts Agent Emacs. The first start builds its packages, which takes a few minutes. After that, open Agent Emacs from Spotlight or Launchpad, or run `agent-emacs` in a terminal.
 
-   If you will use Codex, also run `brew install coreutils`. agent-log builds the Codex session catalog with `timeout` or `gtimeout`, which macOS lacks; without them its session browser and search list no Codex sessions.
+<details>
+<summary>What the installer does</summary>
 
-   Any other Emacs 30 or later installed as `/Applications/Emacs.app` works too, such as `brew install --cask emacs`, but only Emacs+ can hide the window's title bar.
+- Installs [Emacs+](https://github.com/d12frosted/homebrew-emacs-plus) on an Apple Silicon Mac with macOS 15 or later, and the standard Emacs app elsewhere. An Emacs 30 or later already in `/Applications` is kept.
+- Installs Claude Code, Codex, `coreutils` and the Iosevka and Symbols Nerd fonts, unless you already have them.
+- Puts Agent Emacs in `~/.config/agent-emacs`, an `Agent Emacs` app in `~/Applications`, and the `agent-emacs` command in `~/.local/bin` when that folder is on your `PATH`.
 
-   Optionally, install the fonts Agent Emacs is designed around. Without them it uses Menlo and a mode line without icons.
-
-   ```sh
-   brew install --cask font-iosevka font-symbols-only-nerd-font
-   ```
-
-2. Install the agents you want to use:
-
-   ```sh
-   curl -fsSL https://claude.ai/install.sh | bash   # Claude Code
-   npm install -g @openai/codex                     # Codex
-   ```
-
-   Log in to each once from a terminal (`claude`, then `codex`).
-
-3. Get Agent Emacs and start it:
-
-   ```sh
-   git clone https://github.com/benthamite/agent-emacs ~/.config/agent-emacs
-   ~/.config/agent-emacs/bin/agent-emacs
-   ```
-
-The first start downloads and builds the packages, which takes a few minutes. When it is done, Agent Emacs runs `M-x agent-setup`, which checks that the agents are installed. Agent Emacs never edits your Claude Code settings: the hooks that tell Emacs when a session is waiting for you are passed only to the sessions it starts, so `claude` in a terminal is unaffected. Setup also offers to link three skills into `~/.claude/skills` and `~/.codex/skills`: `handoff`, which the menu's handoff command needs, and two that let one session read or message another. It asks first, and never replaces a skill of yours with the same name. You can run `M-x agent-setup` again at any time.
-
-To start Agent Emacs from Spotlight or the Dock, create an app around the launcher, for example with Automator ("Run Shell Script": `~/.config/agent-emacs/bin/agent-emacs`).
+On its first start, Agent Emacs offers to link three skills into `~/.claude/skills` and `~/.codex/skills`: `handoff`, which the menu's handoff command needs, and two that let one session read or message another. It never replaces a skill of yours with the same name, and it never edits your Claude Code settings.
+</details>
 
 ## Use
 
-| Keys | What it does |
-|------|--------------|
-| `H-e` | Agent menu: start, resume, switch and close sessions |
-| `H-e s` | Switch to a session |
-| `H-e w` | Jump to the next session waiting for you |
-| `H-g` | Git status (Magit) |
-| `H-d` | Browse files (Dired); `(` shows or hides file details |
-| `H-t` | Open a terminal in the current project |
-| `H-p` | Search the current project |
-| `H-o` | Switch to the other window |
-| `H-f` | Open a file |
+Agent Emacs opens split into two columns: the left one for your first session, the right one listing the main keys (`M-x agent-emacs-welcome` shows them again). Sessions appear as tabs along the top, coloured while they wait for you, and a notification tells you when an agent finishes.
 
-The Mac keys give Emacs four of its five modifiers:
+Keys are written the Emacs way:
 
-| Written as | Modifier | Mac key | Used for |
-|------------|----------|---------|----------|
-| `C-` | Control | Control | `C-c` means Control-c |
-| `M-` | Meta | Option | `M-x` means Option-x |
-| `H-` | Hyper | Left Command | The Mac shortcuts: Cmd-C, Cmd-V, Cmd-Z and Cmd-S work as in any Mac app |
-| `s-` | Super | Right Command | Commands of the current mode, such as `s-c` to finish a commit message and `s-k` to cancel it |
-| `S-` | Shift | Shift | `S-RET` means Shift-Return |
+| Written as | Modifier | Mac key | Example |
+|------------|----------|---------|---------|
+| `C-` | Control | Control | `C-s` searches this file |
+| `M-` | Meta | Option | `M-x` runs any command by name |
+| `H-` | Hyper | Left Command | `H-c` copies, as Cmd-C does in any Mac app |
+| `s-` | Super | Right Command | `s-c` finishes a commit message |
+| `S-` | Shift | Shift | `S-RET` starts a new line in a prompt |
 
-The right Option key still types accented characters, so no key gives Alt (`A-`). Esc cancels anything, as `C-g` does in other Emacs setups; in a terminal it goes to the program instead. If Emacs itself stops responding, press `C-g`. Select text as in any Mac app: Shift with the arrow keys, adding Option to go by word or Cmd to go to the end of the line or file, or drag with the mouse. Typing replaces the selection, and selected text can be dragged elsewhere. In files, an opening bracket or quote gets its closing one. Under Emacs+ the window has no title bar; `C-x C-c` quits. Not sure what comes next? Type `C-x` (or `C-c`, `C-h`…) and pause: a list of every key you can press next, and what it does, pops up. `M-x agent-emacs-welcome` shows the key overview again.
+- **Selecting text** works as in any Mac app: Shift with the arrow keys, adding Option to go by word or Cmd to go to the end of the line or file, or drag with the mouse. Typing replaces the selection.
+- **Esc cancels** anything. In a terminal it goes to the program instead. If Emacs itself stops responding, press `C-g`.
+- **Not sure what comes next?** Type a key such as `C-x` and pause: a list of every key that can follow pops up.
+- **Quit** with `C-x C-c`.
 
-Agent Emacs starts with the window split into two columns, so that two sessions fit side by side: the left one is empty, ready for your first session, and the right one shows the welcome screen with the main keys. Sessions also appear as tabs along the top, coloured when they are waiting for input, and you get a notification when an agent finishes. The bar stays there, empty, until your first session.
+The right Option key still types accented characters.
 
 ## Your first hour
 
@@ -84,23 +54,14 @@ Agent Emacs starts with the window split into two columns, so that two sessions 
 3. Press `H-e w` to reach the next session waiting for you, or `H-e s` to choose one.
 4. To finish, press `H-e x`. It runs your closing skills, if you set any, and then closes the session.
 
-Three things surprise most people at first:
+Two things surprise most people at first:
 
 - **Past chats open read-only.** `H-e l` opens the history menu, for browsing and searching past chats. To continue one, press `H-e r`, which resumes a session.
-- **`C-x p p` lists only projects you have visited.** It starts empty and fills as you open files in Git repositories. To add a whole folder of them at once, use `M-x project-remember-projects-under`.
 - **Keys in a chat go to the agent.** The editing keys work as in a Mac text field: Option and Cmd arrows, Cmd-Backspace, Cmd-V, Cmd-Z, and a single Esc to interrupt. Clicking on the line with the cursor moves the cursor there.
 
 ## Update
 
-```sh
-cd ~/.config/agent-emacs && git pull
-```
-
-Then restart Agent Emacs. Package versions are pinned in `lockfile.el`, so everyone runs the versions this configuration was tested with. When an update changes those versions, the next start installs them afresh, which takes a few minutes, and removes the old ones.
-
-## Develop
-
-`test/smoke-test.sh` installs Agent Emacs from scratch in a throwaway home directory and checks that every package is at its locked commit, that startup is clean and that `agent-setup` passes. After changing packages, regenerate the lock file from a tested install with `M-x elpaca-write-lock-file`, and update the Elpaca commit pinned in `init.el` to the one it records.
+Run the install command again, then restart Agent Emacs. Package versions are pinned in `lockfile.el`, so everyone runs the versions this configuration was tested with. When an update changes those versions, the next start installs them afresh, which takes a few minutes, and removes the old ones.
 
 ## Customize
 
@@ -137,4 +98,8 @@ Only devices in your tailnet can reach the page, and there is no other login, so
 - **Appearance**: [doom-modeline](https://github.com/seagle0128/doom-modeline) (mode line, including each session's model, effort and account), [spacious-padding](https://github.com/protesilaos/spacious-padding), [nerd-icons-dired](https://github.com/rainstormstudio/nerd-icons-dired) (icons in Dired), the tinted Modus themes.
 - **Built in**: Modus themes, which-key, project.el, recent files, history and cursor-position saving.
 
-Everything is in two short files, [`early-init.el`](early-init.el) and [`init.el`](init.el).
+The whole configuration is in [`early-init.el`](early-init.el) and [`init.el`](init.el).
+
+## Develop
+
+`test/smoke-test.sh` installs Agent Emacs from scratch in a throwaway home directory and checks that every package is at its locked commit, that startup is clean and that `agent-setup` passes. After changing packages, regenerate the lock file from a tested install with `M-x elpaca-write-lock-file`, and update the Elpaca commit pinned in `init.el` to the one it records. `install.sh` reads the `AGENT_EMACS_*` variables listed at its top, to install into throwaway folders.
