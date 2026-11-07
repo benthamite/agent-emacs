@@ -758,6 +758,13 @@ click on another line of a multi-line input still goes to Claude Code."
   (agent-codex-mode 1)
   (agent-tab-bar-mode 1))
 
+;; Drop the major mode and process segments ("Eat [semi-char]:run"):
+;; every session buffer is an `eat' terminal, so they say nothing.
+(with-eval-after-load 'agent-doom-modeline
+  (doom-modeline-def-modeline 'ai-session
+    '(bar agent-session)
+    '(misc-info time)))
+
 (use-package agent-log
   :ensure (:host github :repo "benthamite/agent-log")
   :after agent
