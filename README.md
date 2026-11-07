@@ -1,5 +1,3 @@
-# Agent Emacs
-
 <p align="center"><img src="banner.svg" alt="Agent Emacs"></p>
 
 An Emacs set up for one job: running AI coding agents — [Claude Code](https://code.claude.com) and [Codex](https://developers.openai.com/codex) — side by side, with every session one keystroke away.
