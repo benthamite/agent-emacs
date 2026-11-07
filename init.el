@@ -205,6 +205,9 @@ its binding."
   '((emacs global-map
            ("H-a" . mark-whole-buffer)
            ("H-s" . save-buffer)
+           ("H-f" . find-file)
+           ("H-b" . consult-buffer)
+           ("H-q" . kill-current-buffer)
            ("H-v" . yank)
            ("H-C" . kill-ring-save)
            ("H-z" . undo-only)
@@ -510,8 +513,7 @@ Also set `exec-path' from PATH."
    ("M-g g" . consult-goto-line)
    ("M-g i" . consult-imenu)
    ("M-s r" . consult-ripgrep)
-   ("M-s l" . consult-line)
-   ("H-f" . consult-line)))
+   ("M-s l" . consult-line)))
 
 ;;;; Dired
 
@@ -804,11 +806,9 @@ click on another line of a multi-line input still goes to Claude Code."
      ("S-RET" . "start a new line")
      ("Esc" . "interrupt the agent"))
     ("Files"
-     ("C-x C-f" . "open a file")
-     ("C-x p f" . "open a file in this project")
-     ("C-x b" . "switch to an open file")
-     ("C-x k" . "close this file")
-     ("C-x p p" . "switch to another project you have visited"))
+     ("H-f" . "open a file")
+     ("H-b" . "switch to an open file")
+     ("H-q" . "close this file"))
     ("Programs"
      ("C-x d" . "file browser (Dired)")
      ("C-x g" . "Git (Magit)")

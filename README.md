@@ -59,7 +59,7 @@ To start Agent Emacs from Spotlight or the Dock, create an app around the launch
 | `C-x g` | Git status (Magit) |
 | `C-x d` | Browse files (Dired); `(` shows or hides file details |
 | `C-x p t` | Open a terminal in the current project |
-| `C-x p f` | Open a file in the current project |
+| `H-f` | Open a file |
 
 The Mac keys give Emacs four of its five modifiers:
 
@@ -70,13 +70,13 @@ The Mac keys give Emacs four of its five modifiers:
 | Left Command | Hyper (`H-`) | The Mac shortcuts: Cmd-C, Cmd-V, Cmd-Z and Cmd-S work as in any Mac app |
 | Right Command | Super (`s-`) | Commands of the current mode, such as `s-c` to finish a commit message and `s-k` to cancel it |
 
-The right Option key still types accented characters, so no key gives Alt (`A-`). `C-g` cancels anything. In files, an opening bracket or quote gets its closing one, and selected text can be dragged with the mouse. Under Emacs+ the window has no title bar; Cmd-Q quits. Not sure what comes next? Type `C-x` (or `C-c`, `C-h`…) and pause: a list of every key you can press next, and what it does, pops up. `M-x agent-emacs-welcome` shows the key overview again.
+The right Option key still types accented characters, so no key gives Alt (`A-`). `C-g` cancels anything. In files, an opening bracket or quote gets its closing one, and selected text can be dragged with the mouse. Under Emacs+ the window has no title bar; `C-x C-c` quits. Not sure what comes next? Type `C-x` (or `C-c`, `C-h`…) and pause: a list of every key you can press next, and what it does, pops up. `M-x agent-emacs-welcome` shows the key overview again.
 
 Agent Emacs starts with the window split into two columns, so that two sessions fit side by side: the left one is empty, ready for your first session, and the right one shows the welcome screen with the main keys. Sessions also appear as tabs along the top, coloured when they are waiting for input, and you get a notification when an agent finishes. The bar stays there, empty, until your first session.
 
 ## Your first hour
 
-1. Press `C-x C-f`, open any file in the project you want to work on, and press `H-e n`. The session starts in that file's project, or in its folder if it is not in a project. There is no folder prompt, so open something in the right place first.
+1. Press `H-f`, open any file in the project you want to work on, and press `H-e n`. The session starts in that file's project, or in its folder if it is not in a project. There is no folder prompt, so open something in the right place first.
 2. Type your request and press `RET` to send it; `S-RET` starts a new line instead. A tab along the top shows the session's state; the green colour means it stopped and is waiting for you, whether it needs an answer or finished some time ago.
 3. Press `H-e w` to reach the next session waiting for you, or `H-e s` to choose one.
 4. To finish, press `H-e x`. It runs your closing skills, if you set any, and then closes the session.
