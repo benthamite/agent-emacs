@@ -1,5 +1,14 @@
 # Agent Emacs
 
+```
+    _    ____ _____ _   _ _____
+   / \  / ___| ____| \ | |_   _|
+  / _ \| |  _|  _| |  \| | | |
+ / ___ \ |_| | |___| |\  | | |
+/_/   \_\____|_____|_| \_| |_|
+         E  M  A  C  S
+```
+
 An Emacs set up for one job: running AI coding agents — [Claude Code](https://code.claude.com) and [Codex](https://developers.openai.com/codex) — side by side, with every session one keystroke away.
 
 It is built around the [`agent`](https://github.com/benthamite/agent) package and comes with the defaults Emacs should have had all along: no backup clutter, a theme that follows your system's light or dark mode, the usual Mac shortcuts, modern completion, and files that refresh when an agent changes them.
@@ -96,7 +105,7 @@ Only devices in your tailnet can reach the page, and there is no other login, so
 ## What is included
 
 - **Agents**: [agent](https://github.com/benthamite/agent), [claude-code.el](https://github.com/stevemolitor/claude-code.el), [monet](https://github.com/stevemolitor/monet) (lets Claude Code open diffs and files in Emacs), [codex](https://github.com/benthamite/codex), [agent-log](https://github.com/benthamite/agent-log) (readable logs of past sessions), [eat](https://codeberg.org/akib/emacs-eat) (terminal).
-- **Editing**: [vertico](https://github.com/minad/vertico), [orderless](https://github.com/oantolin/orderless), [marginalia](https://github.com/minad/marginalia), [corfu](https://github.com/minad/corfu), [consult](https://github.com/minad/consult), [magit](https://magit.vc), [markdown-mode](https://github.com/jrblevin/markdown-mode), [alert](https://github.com/jwiegley/alert).
+- **Editing**: [vertico](https://github.com/minad/vertico), [orderless](https://github.com/oantolin/orderless), [marginalia](https://github.com/minad/marginalia), [corfu](https://github.com/minad/corfu), [consult](https://github.com/minad/consult), [magit](https://magit.vc), [markdown-mode](https://github.com/jrblevin/markdown-mode), [alert](https://github.com/jwiegley/alert), [org-tidy](https://github.com/jxq0/org-tidy) (hides property drawers in captured prompts).
 - **Appearance**: [doom-modeline](https://github.com/seagle0128/doom-modeline) (mode line, showing each session's model, effort and account, without the terminal's mode name), [spacious-padding](https://github.com/protesilaos/spacious-padding), [nerd-icons-dired](https://github.com/rainstormstudio/nerd-icons-dired) (icons in Dired), the tinted Modus themes.
 - **Built in**: Modus themes, which-key, project.el, recent files, history and cursor-position saving.
 

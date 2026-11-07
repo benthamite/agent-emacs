@@ -1,7 +1,7 @@
 ((agent :source "elpaca-menu-lock-file" :recipe
         (:source "Init file" :package "agent" :id agent :host github :repo
                  "benthamite/agent" :type git :protocol https :inherit t :depth
-                 treeless :ref "6bb116516f8466050498cd4075866b737eca3f76"))
+                 treeless :ref "b3d16021aa631ee0d59d7c6b9bede3868c812dd8"))
  (agent-log :source "elpaca-menu-lock-file" :recipe
             (:source "Init file" :package "agent-log" :id agent-log :host github
                      :repo "benthamite/agent-log" :type git :protocol https
@@ -233,6 +233,18 @@
                       :source "MELPA" :id orderless :type git :protocol https
                       :inherit t :depth treeless :ref
                       "3d2c2e6468ddf51e69c78e8212e5fd9006d2ce8a"))
+ (org-tidy :source "elpaca-menu-lock-file" :recipe
+           (:package "org-tidy" :fetcher github :repo "jxq0/org-tidy" :files
+                     ("*.el" "*.el.in" "dir" "*.info" "*.texi" "*.texinfo"
+                      "doc/dir" "doc/*.info" "doc/*.texi" "doc/*.texinfo"
+                      "lisp/*.el" "docs/dir" "docs/*.info" "docs/*.texi"
+                      "docs/*.texinfo"
+                      (:exclude ".dir-locals.el" "test.el" "tests.el"
+                                "*-test.el" "*-tests.el" "LICENSE" "README*"
+                                "*-pkg.el"))
+                     :source "MELPA" :id org-tidy :type git :protocol https
+                     :inherit t :depth treeless :ref
+                     "0bea3a2ceaa999e0ad195ba525c5c1dcf5fba43b"))
  (s :source "elpaca-menu-lock-file" :recipe
     (:package "s" :fetcher github :repo "magnars/s.el" :files
               ("*.el" "*.el.in" "dir" "*.info" "*.texi" "*.texinfo" "doc/dir"

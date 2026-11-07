@@ -784,6 +784,14 @@ click on another line of a multi-line input still goes to Claude Code."
   (agent-log-auto-summarize-sweep-interval
    (and (agent-emacs-summarize-past-sessions-p) 900)))
 
+;; Captured prompts are Org entries with a property drawer each; hide the
+;; drawers, which say nothing the heading does not.
+(use-package org-tidy
+  :custom
+  (org-tidy-properties-inline-symbol "")
+  :hook
+  (agent-prompt-capture-mode . org-tidy-mode))
+
 ;;;; Server
 
 ;; The Claude Code hooks report session state to Emacs through
