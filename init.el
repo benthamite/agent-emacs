@@ -516,6 +516,7 @@ Also set `exec-path' from PATH."
    ("M-g g" . consult-goto-line)
    ("M-g i" . consult-imenu)
    ("M-s r" . consult-ripgrep)
+   ("H-p" . consult-ripgrep)
    ("M-s l" . consult-line)))
 
 ;;;; Dired
@@ -819,8 +820,7 @@ click on another line of a multi-line input still goes to Claude Code."
     ("Search"
      ("C-s" . "search forward in this file")
      ("C-r" . "search backward in this file")
-     ("M-s r" . "search this project")
-     ("M-g g" . "go to a line number"))
+     ("H-p" . "search this project"))
     ("Windows"
      ("H-o" . "switch to the other window")
      ("H-w" . "close this window"))

@@ -59,6 +59,7 @@ To start Agent Emacs from Spotlight or the Dock, create an app around the launch
 | `H-g` | Git status (Magit) |
 | `H-d` | Browse files (Dired); `(` shows or hides file details |
 | `H-t` | Open a terminal in the current project |
+| `H-p` | Search the current project |
 | `H-o` | Switch to the other window |
 | `H-f` | Open a file |
 
