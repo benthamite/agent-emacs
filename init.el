@@ -834,7 +834,7 @@ click on another line of a multi-line input still goes to Claude Code."
      ("H-e s" "switch to a session")
      ("H-e w" "go to the next session waiting for you")
      ("H-e x" "end this session")
-     ("H-e r" "resume a past session")
+     ("H-e o" "open a past session")
      ("H-e l" "read past sessions")
      ("H-e" "all agent commands"))
     ("In a session"

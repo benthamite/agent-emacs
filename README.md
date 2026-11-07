@@ -60,7 +60,7 @@ The right Option key still types accented characters.
 
 Two things surprise most people at first:
 
-- **Past chats open read-only.** `H-e l` opens the history menu, for browsing and searching past chats. To continue one, press `H-e r`, which resumes a session.
+- **Past chats open read-only.** `H-e l` opens the history menu, for browsing and searching past chats. To continue one, press `H-e o`, which opens a past session.
 - **Keys in a chat go to the agent.** The editing keys work as in a Mac text field: Option and Cmd arrows, Cmd-Backspace, Cmd-V, Cmd-Z, and a single Esc to interrupt. Clicking on the line with the cursor moves the cursor there.
 
 ## Update
