@@ -217,8 +217,6 @@ its binding."
            ("C-H-S-g" . top-level))
     (agent global-map
            ("H-e" . agent-menu))
-    (claude-code global-map
-                 ("H-E" . claude-code-transient))
     (isearch isearch-mode-map
              ("H-m" . isearch-toggle-lax-whitespace))
     (dired dired-mode-map
@@ -774,36 +772,64 @@ click on another line of a multi-line input still goes to Claude Code."
   (expand-file-name "setup-done" agent-emacs-var-directory)
   "File whose existence records that first-run setup has been offered.")
 
+(defconst agent-emacs-welcome-sections
+  '(("Emacs modifiers"
+     ("C- (Control)" . "Control")
+     ("M- (Meta)" . "Option")
+     ("H- (Hyper)" . "left Command")
+     ("s- (Super)" . "right Command"))
+    ("Agents"
+     ("H-e n" . "start a session in the current file's project")
+     ("H-e s" . "switch to a session")
+     ("H-e w" . "go to the next session waiting for you")
+     ("H-e x" . "end this session")
+     ("H-e" . "all agent commands"))
+    ("Files"
+     ("C-x C-f" . "open a file")
+     ("C-x p f" . "open a file in this project")
+     ("C-x b" . "switch to an open file")
+     ("C-x d" . "browse a folder")
+     ("C-x g" . "Git status"))
+    ("Search"
+     ("C-s" . "search forward in this file")
+     ("C-r" . "search backward in this file")
+     ("M-s r" . "search this project"))
+    ("Windows"
+     ("C-x 3" . "split side by side")
+     ("C-x 2" . "split top and bottom")
+     ("C-x 1" . "close the other windows")
+     ("C-x 0" . "close this window")
+     ("C-x o" . "switch to the other window"))
+    ("When stuck"
+     ("C-g" . "cancel whatever is happening")))
+  "The welcome screen, as (HEADING (KEY . DESCRIPTION)...).")
+
+(defconst agent-emacs-welcome-key-width
+  (+ 2 (seq-max (mapcar (lambda (entry) (string-width (car entry)))
+                        (seq-mapcat #'cdr agent-emacs-welcome-sections))))
+  "Width of the key column on the welcome screen: the longest key and a gap.")
+
 (defun agent-emacs-welcome ()
   "Show the welcome buffer listing the main keys."
   (interactive)
   (with-current-buffer (get-buffer-create agent-emacs-welcome-buffer-name)
     (let ((inhibit-read-only t))
       (erase-buffer)
-      (insert (propertize "Agent Emacs\n\n" 'face '(:height 1.5 :weight bold))
-              "Keyboard\n"
-              "  H-  left Command    the Mac shortcuts: H-c copy, H-v paste, H-z undo, H-s save\n"
-              "  s-  right Command   mode commands, such as s-c to finish a commit message\n"
-              "  M-  Option          C-  Control\n\n"
-              "Agents\n"
-              "  H-e or C-c a   agent menu: start, resume and manage sessions\n"
-              "  C-c s          switch to a session\n"
-              "  C-c w          jump to the next session waiting for you\n"
-              "  H-E or C-c c   Claude Code commands\n"
-              "  M-x agent-setup   check that everything agents need is installed\n\n"
-              "Files and projects\n"
-              "  C-x C-f      open a file          C-x b    switch buffer\n"
-              "  C-x p f      file in project      C-x g    git status (Magit)\n"
-              "  C-x d        browse files         H-f      search this buffer\n"
-              "  M-s r        search the project\n\n"
-              "Getting around\n"
-              "  C-g          cancel anything\n"
-              "  C-x 0 / C-x 1 / C-x 2 / C-x 3   close / only / split windows\n"
-              "  After a prefix key such as C-x, wait a moment to see what follows.\n"
-              "  M-x agent-emacs-welcome   show this screen again\n"))
+      (insert (propertize "Agent Emacs\n" 'face '(:height 1.5 :weight bold))
+              (propertize "M-x agent-emacs-welcome shows this screen again.\n"
+                          'face 'shadow))
+      (mapc #'agent-emacs-welcome-insert-section agent-emacs-welcome-sections))
     (special-mode)
     (goto-char (point-min))
     (current-buffer)))
+
+(defun agent-emacs-welcome-insert-section (section)
+  "Insert SECTION, an element of `agent-emacs-welcome-sections'."
+  (insert "\n" (propertize (car section) 'face 'bold) "\n")
+  (pcase-dolist (`(,key . ,description) (cdr section))
+    (insert "  " (propertize key 'face 'help-key-binding)
+            (make-string (- agent-emacs-welcome-key-width (string-width key)) ?\s)
+            description "\n")))
 
 (setq initial-buffer-choice #'agent-emacs-welcome)
 
