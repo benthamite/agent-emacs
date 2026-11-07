@@ -758,19 +758,31 @@ click on another line of a multi-line input still goes to Claude Code."
   (agent-codex-mode 1)
   (agent-tab-bar-mode 1))
 
-;; Drop the major mode and process segments ("Eat [semi-char]:run"):
-;; every session buffer is an `eat' terminal, so they say nothing.
-(with-eval-after-load 'agent-doom-modeline
-  (doom-modeline-def-modeline 'ai-session
-    '(bar agent-session)
-    '(misc-info time)))
+(defconst agent-emacs-past-summaries-file
+  (expand-file-name "summarize-past-sessions" agent-emacs-var-directory)
+  "File recording whether the user agreed to summarize their past sessions.")
 
+(defun agent-emacs-summarize-past-sessions-p ()
+  "Return non-nil when the user agreed to summarize their past sessions."
+  (and (file-exists-p agent-emacs-past-summaries-file)
+       (with-temp-buffer
+         (insert-file-contents agent-emacs-past-summaries-file)
+         (equal (string-trim (buffer-string)) "yes"))))
+
+;; Summaries come from the user's own Claude Code or Codex login, so no
+;; API key is needed.  Each session is summarized when it stops; the
+;; background sweep through older sessions runs only if the user agreed
+;; to it, since it spends their plan's allowance.
 (use-package agent-log
   :ensure (:host github :repo "benthamite/agent-log")
   :after agent
   :demand t
   :custom
-  (agent-log-auto-sync-sessions t))
+  (agent-log-auto-sync-sessions t)
+  (agent-log-summary-method 'agent-cli)
+  (agent-log-auto-summarize-sessions t)
+  (agent-log-auto-summarize-sweep-interval
+   (and (agent-emacs-summarize-past-sessions-p) 900)))
 
 ;;;; Server
 
@@ -907,10 +919,34 @@ while the welcome buffer stays in view on the right."
 (add-hook 'window-setup-hook #'agent-emacs-split-into-columns)
 
 (defun agent-emacs-offer-setup ()
-  "Run `agent-setup' the first time Agent Emacs starts."
+  "Set Agent Emacs up the first time it starts.
+Run `agent-setup', ask whether to summarize the sessions the user
+already has, and ask macOS for permission to show notifications."
   (unless (file-exists-p agent-emacs-setup-marker)
     (with-temp-file agent-emacs-setup-marker)
-    (agent-setup)))
+    (agent-setup)
+    (agent-emacs-ask-about-past-summaries)
+    (agent-emacs-request-notifications)))
+
+(defun agent-emacs-ask-about-past-summaries ()
+  "Ask once whether to summarize the sessions the user already has.
+Agreeing starts the background sweep through them, which runs one
+summary after another on the user's plan."
+  (let ((yes (y-or-n-p (concat "Also summarize the Claude Code and Codex sessions "
+                               "you already have?  This runs in the background "
+                               "and uses your plan's allowance "))))
+    (with-temp-file agent-emacs-past-summaries-file
+      (insert (if yes "yes" "no") "\n"))
+    (when yes
+      (customize-set-variable 'agent-log-auto-summarize-sweep-interval 900))))
+
+(defun agent-emacs-request-notifications ()
+  "Show one notification, so macOS asks for permission now.
+Without permission, the alert when an agent finishes never appears,
+and macOS asks only once, at the first notification."
+  (when (eq system-type 'darwin)
+    (alert "Agent Emacs will tell you here when an agent finishes."
+           :title "Agent Emacs")))
 
 (add-hook 'elpaca-after-init-hook #'agent-emacs-offer-setup)
 

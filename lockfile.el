@@ -1,12 +1,12 @@
 ((agent :source "elpaca-menu-lock-file" :recipe
         (:source "Init file" :package "agent" :id agent :host github :repo
                  "benthamite/agent" :type git :protocol https :inherit t :depth
-                 treeless :ref "15f76aa9f621972c3cbdb69aba0087a30831b423"))
+                 treeless :ref "6bb116516f8466050498cd4075866b737eca3f76"))
  (agent-log :source "elpaca-menu-lock-file" :recipe
             (:source "Init file" :package "agent-log" :id agent-log :host github
                      :repo "benthamite/agent-log" :type git :protocol https
                      :inherit t :depth treeless :ref
-                     "f4533d6ca4f549cd6ce7d70002d14359ef17a1ee"))
+                     "08e141e2411d17a711d3eaee485a0b9be0b7d6ee"))
  (alert :source "elpaca-menu-lock-file" :recipe
         (:package "alert" :fetcher github :repo "jwiegley/alert" :files
                   ("*.el" "*.el.in" "dir" "*.info" "*.texi" "*.texinfo"
@@ -28,7 +28,7 @@
  (codex :source "elpaca-menu-lock-file" :recipe
         (:source "Init file" :package "codex" :id codex :host github :repo
                  "benthamite/codex" :type git :protocol https :inherit t :depth
-                 treeless :ref "1ad186d329a46ac46a50f780794b31d64fd88c06"))
+                 treeless :ref "75cf8c7375ebd61619f37916e14f4fcbe0e6b297"))
  (compat :source "elpaca-menu-lock-file" :recipe
          (:package "compat" :repo
                    ("https://github.com/emacs-compat/compat" . "compat") :tar

@@ -24,6 +24,8 @@ It installs whatever is missing, asks to log you in to Claude Code and Codex, an
 - Puts Agent Emacs in `~/.config/agent-emacs`, an `Agent Emacs` app in `~/Applications`, and the `agent-emacs` command in `~/.local/bin` when that folder is on your `PATH`.
 
 On its first start, Agent Emacs offers to link three skills into `~/.claude/skills` and `~/.codex/skills`: `handoff`, which the menu's handoff command needs, and two that let one session read or message another. It never replaces a skill of yours with the same name, and it never edits your Claude Code settings.
+
+It then asks whether to summarize the sessions you already have, and shows one notification so macOS asks for permission to show the alert when an agent finishes. Session summaries come from your own Claude Code login (or Codex's, if you have only Codex), so they need no API key; each new session is summarized when it stops, and older sessions only if you said yes, since each summary uses a little of your plan's allowance.
 </details>
 
 ## Use
