@@ -732,6 +732,13 @@ click on another line of a multi-line input still goes to Claude Code."
   :after claude-code
   :demand t
   :config
+  ;; Do not report the visited file and selection to Claude Code after
+  ;; every command: Claude Code shows it as an "In FILE" chip in the
+  ;; prompt.  Monet has no option for this, so undo its hook registration.
+  (advice-add 'monet-register-hooks :after
+              (lambda (&rest _)
+                (remove-hook 'post-command-hook #'monet--track-selection-change))
+              '((name . agent-emacs-no-selection-tracking)))
   (monet-mode 1)
   (add-hook 'claude-code-process-environment-functions
             #'monet-start-server-function))
