@@ -1,7 +1,18 @@
 #!/bin/sh
 # Start Agent Emacs as its own Emacs instance, separate from any other
 # Emacs configuration on this machine.
-dir=$(cd "$(dirname "$0")/.." && pwd)
+
+# Follow symlinks, so that a link to this script on the PATH still finds
+# the configuration next to the script itself.
+self=$0
+while [ -L "$self" ]; do
+  link=$(readlink "$self")
+  case $link in
+    /*) self=$link ;;
+    *) self=$(dirname "$self")/$link ;;
+  esac
+done
+dir=$(cd "$(dirname "$self")/.." && pwd)
 
 # Start from a clean environment, as a launch from the Dock would, so that
 # sessions do not inherit the variables of whatever terminal app ran this.
