@@ -161,14 +161,193 @@
 ;;;; macOS
 
 (when (eq system-type 'darwin)
-  ;; Option is Meta and Command is Super, so the usual Command shortcuts
-  ;; (Cmd-C, Cmd-V, Cmd-Z, Cmd-S, Cmd-Q) work.  The right Option key is
-  ;; left to macOS for typing accented and special characters.
-  (setq mac-option-modifier 'meta
-        mac-command-modifier 'super
-        mac-right-option-modifier 'none)
+  ;; The Mac's modifier keys give Emacs four of its five modifiers:
+  ;;   left Command   Hyper, which carries the usual Mac shortcuts
+  ;;   right Command  Super
+  ;;   Option         Meta
+  ;;   Control        Control
+  ;; The right Option key is left to macOS for typing accented and
+  ;; special characters, so no key gives Alt.
+  (setq mac-command-modifier 'hyper
+        mac-right-command-modifier 'super
+        mac-option-modifier 'meta
+        mac-right-option-modifier 'none
+        mac-control-modifier 'control)
   ;; macOS `ls' does not support --dired.
   (setq dired-use-ls-dired nil))
+
+;;;; Keys
+
+(defun agent-emacs-hyper-twins (map)
+  "Give each Super key in MAP a Hyper twin that runs the same command.
+Emacs and packages put the Mac shortcuts on Super (`s-c' copies), but
+the left Command key sends Hyper.  A Hyper key MAP already binds keeps
+its binding."
+  (let (supers)
+    (map-keymap (lambda (event binding)
+                  (when (and (or (integerp event) (symbolp event))
+                             (memq 'super (event-modifiers event)))
+                    (push (cons event binding) supers)))
+                map)
+    (pcase-dolist (`(,event . ,binding) supers)
+      (let ((twin (key-parse (replace-regexp-in-string
+                              "\\(\\`\\|-\\)s-" "\\1H-"
+                              (key-description (vector event))))))
+        (unless (lookup-key map twin)
+          (define-key map twin binding))))))
+
+;; The Mac shortcuts Emacs itself defines, in term/ns-win.el.
+(dolist (map (list global-map esc-map isearch-mode-map
+                   minibuffer-local-isearch-map))
+  (agent-emacs-hyper-twins map))
+
+(defconst agent-emacs-keys
+  '((emacs global-map
+           ("H-a" . mark-whole-buffer)
+           ("H-s" . save-buffer)
+           ("H-v" . yank)
+           ("H-C" . kill-ring-save)
+           ("H-z" . undo-only)
+           ("H-Z" . undo-redo)
+           ("H-m" . set-mark-command)
+           ("H-H" . kmacro-start-macro-or-insert-counter)
+           ("H-:" . emoji-search)
+           ("H-M-<tab>" . other-frame)
+           ("C-H-g" . abort-recursive-edit)
+           ("C-H-S-g" . top-level))
+    (agent global-map
+           ("H-e" . agent-menu))
+    (claude-code global-map
+                 ("H-E" . claude-code-transient))
+    (isearch isearch-mode-map
+             ("H-m" . isearch-toggle-lax-whitespace))
+    (dired dired-mode-map
+           ("H-z" . dired-undo)
+           ("s-s" . dired-isearch-filenames)
+           ("s-a" . gnus-dired-attach))
+    (wdired wdired-mode-map
+            ("s-c" . wdired-finish-edit))
+    (with-editor with-editor-mode-map
+                 ("s-c" . with-editor-finish)
+                 ("s-k" . with-editor-cancel))
+    (smerge-mode smerge-mode-map
+                 ("s-n" . smerge-next)
+                 ("s-SPC" . smerge-next)
+                 ("s-p" . smerge-prev)
+                 ("s-l" . smerge-keep-lower)
+                 ("s-k" . smerge-keep-upper)
+                 ("s-a" . smerge-keep-all)
+                 ("s-b" . smerge-keep-base)
+                 ("s-c" . smerge-keep-current))
+    (magit-diff magit-hunk-section-map
+                ("s-l" . magit-smerge-keep-lower)
+                ("s-k" . magit-smerge-keep-upper)
+                ("s-a" . magit-smerge-keep-all)
+                ("s-b" . magit-smerge-keep-base)
+                ("s-c" . magit-smerge-keep-current))
+    (magit-diff magit-hunk-section-smerge-map
+                ("s-l" . magit-smerge-keep-lower)
+                ("s-k" . magit-smerge-keep-upper)
+                ("s-a" . magit-smerge-keep-all)
+                ("s-b" . magit-smerge-keep-base)
+                ("s-c" . magit-smerge-keep-current))
+    (magit-status magit-status-mode-map
+                  ("s-l" . magit-smerge-keep-lower)
+                  ("s-k" . magit-smerge-keep-upper)
+                  ("s-a" . magit-smerge-keep-all)
+                  ("s-b" . magit-smerge-keep-base)
+                  ("s-c" . magit-smerge-keep-current)
+                  ("s-u" . magit-remote-unshallow))
+    (markdown-mode markdown-mode-map
+                   ("s-a" . markdown-insert-gfm-code-block)
+                   ("s-b" . markdown-insert-bold)
+                   ("s-e" . markdown-insert-code)
+                   ("s-f" . markdown-insert-footnote)
+                   ("s-i" . markdown-insert-italic)
+                   ("s-k" . markdown-insert-link)
+                   ("s-z" . markdown-edit-code-block))
+    (prog-mode prog-mode-map
+               ("s-e" . xref-find-definitions)
+               ("s-q" . prog-fill-reindent-defun))
+    (elisp-mode emacs-lisp-mode-map
+                ("s-b" . eval-buffer)
+                ("s-c" . exit-recursive-edit)
+                ("s-d" . eval-defun)
+                ("s-r" . project-query-replace-regexp))
+    (elisp-mode lisp-interaction-mode-map
+                ("s-b" . eval-buffer)
+                ("s-d" . eval-defun))
+    (shell shell-mode-map
+           ("s-c" . exit-recursive-edit))
+    (python python-mode-map
+            ("s-c" . python-shell-send-buffer)
+            ("s-d" . python-shell-send-defun)
+            ("s-e" . python-shell-send-statement)
+            ("s-l" . python-shell-send-file)
+            ("s-r" . python-shell-send-region)
+            ("s-s" . python-shell-send-string))
+    (python python-ts-mode-map
+            ("s-c" . python-shell-send-buffer)
+            ("s-d" . python-shell-send-defun)
+            ("s-e" . python-shell-send-statement)
+            ("s-l" . python-shell-send-file)
+            ("s-r" . python-shell-send-region)
+            ("s-s" . python-shell-send-string))
+    (info Info-mode-map
+          ("s-j" . Info-menu))
+    (org org-mode-map
+         ("H-v" . org-yank)
+         ("s-a" . org-archive-subtree-default)
+         ("s-d" . org-deadline)
+         ("s-e" . org-set-effort)
+         ("s-f" . org-footnote-action)
+         ("s-g" . org-agenda)
+         ("s-h" . org-insert-todo-subheading)
+         ("s-k" . org-insert-link)
+         ("s-p" . org-time-stamp-inactive)
+         ("s-q" . org-set-tags-command)
+         ("s-s" . org-schedule)
+         ("s-t" . org-todo)
+         ("s-w" . org-refile)
+         ("s-y" . org-evaluate-time-range)
+         ("s-z" . org-edit-special)
+         ("s-," . org-priority))
+    (org-agenda org-agenda-mode-map
+                ("s-s" . org-save-all-org-buffers))
+    (org-capture org-capture-mode-map
+                 ("s-c" . org-capture-finalize)
+                 ("s-w" . org-capture-refile))
+    (org-src org-src-mode-map
+             ("s-z" . org-edit-src-exit))
+    (org-table org-table-fedit-map
+               ("s-c" . org-table-fedit-finish))
+    (calendar calendar-mode-map
+              ("H-m" . calendar-set-mark))
+    (bibtex bibtex-mode-map
+            ("s-c" . bibtex-copy-entry-as-kill)
+            ("s-v" . bibtex-yank)
+            ("s-x" . bibtex-kill-entry))
+    (message message-mode-map
+             ("s-b" . message-goto-body)
+             ("s-c" . message-send-and-exit)
+             ("s-f" . message-goto-from)
+             ("s-s" . message-goto-subject)
+             ("s-t" . message-goto-to)))
+  "Keys beyond the Mac shortcuts, as (FEATURE KEYMAP (KEY . COMMAND)...).
+Each KEYMAP gets its keys once FEATURE has loaded.")
+
+(pcase-dolist (`(,feature ,map . ,bindings) agent-emacs-keys)
+  (with-eval-after-load feature
+    (pcase-dolist (`(,key . ,command) bindings)
+      (keymap-set (symbol-value map) key command))))
+
+;; Packages that put a key on Super for each terminal buffer.
+(defun agent-emacs-terminal-hyper-twins ()
+  "Give the Super keys of the current terminal buffer's keymap Hyper twins."
+  (agent-emacs-hyper-twins (current-local-map)))
+
+(add-hook 'codex-start-hook #'agent-emacs-terminal-hyper-twins)
+(add-hook 'claude-code-start-hook #'agent-emacs-terminal-hyper-twins)
 
 ;; Apps launched from the Dock do not see the PATH set in the shell, so
 ;; `claude', `codex', `node' and `git' would not be found.  Ask the
@@ -334,7 +513,7 @@ Also set `exec-path' from PATH."
    ("M-g i" . consult-imenu)
    ("M-s r" . consult-ripgrep)
    ("M-s l" . consult-line)
-   ("s-f" . consult-line)))
+   ("H-f" . consult-line)))
 
 ;;;; Dired
 
@@ -398,7 +577,7 @@ Without the font they would show as empty boxes."
   ;; suggested prompt looking like something you typed.
   (set-face-attribute 'eat-term-faint nil :inherit 'shadow)
   ;; Plain `yank' would put the text in the buffer, not send it to the program.
-  (keymap-set eat-semi-char-mode-map "s-v" #'eat-yank))
+  (keymap-set eat-semi-char-mode-map "H-v" #'eat-yank))
 
 (defun agent-emacs-disable-line-spacing ()
   "Turn off line spacing in the current terminal buffer.
@@ -460,10 +639,10 @@ wrapping in a terminal; Iosevka Fixed keeps every character to one cell."
 (defconst agent-emacs-chat-key-sequences
   '(("M-<left>" . "\eb")
     ("M-<right>" . "\ef")
-    ("s-<left>" . "\C-a")
-    ("s-<right>" . "\C-e")
-    ("s-<backspace>" . "\C-u")
-    ("s-z" . "\C-_")
+    ("H-<left>" . "\C-a")
+    ("H-<right>" . "\C-e")
+    ("H-<backspace>" . "\C-u")
+    ("H-z" . "\C-_")
     ("C-z" . "\C-_"))
   "Keys in a Claude chat and the bytes each sends to Claude Code.
 Without these, the keys run Emacs commands that move Emacs's point but
@@ -602,19 +781,23 @@ click on another line of a multi-line input still goes to Claude Code."
     (let ((inhibit-read-only t))
       (erase-buffer)
       (insert (propertize "Agent Emacs\n\n" 'face '(:height 1.5 :weight bold))
+              "Keyboard\n"
+              "  H-  left Command    the Mac shortcuts: H-c copy, H-v paste, H-z undo, H-s save\n"
+              "  s-  right Command   mode commands, such as s-c to finish a commit message\n"
+              "  M-  Option          C-  Control\n\n"
               "Agents\n"
-              "  C-c a        agent menu: start, resume and manage sessions\n"
-              "  C-c s        switch to a session\n"
-              "  C-c w        jump to the next session waiting for you\n"
-              "  C-c c        Claude Code commands\n"
+              "  H-e or C-c a   agent menu: start, resume and manage sessions\n"
+              "  C-c s          switch to a session\n"
+              "  C-c w          jump to the next session waiting for you\n"
+              "  H-E or C-c c   Claude Code commands\n"
               "  M-x agent-setup   check that everything agents need is installed\n\n"
               "Files and projects\n"
               "  C-x C-f      open a file          C-x b    switch buffer\n"
               "  C-x p f      file in project      C-x g    git status (Magit)\n"
-              "  M-s r        search the project   s-f      search this buffer\n\n"
+              "  C-x d        browse files         H-f      search this buffer\n"
+              "  M-s r        search the project\n\n"
               "Getting around\n"
-              "  C-g          cancel anything      C-/      undo\n"
-              "  Cmd-C/V/Z/S  copy, paste, undo, save, as on any Mac app\n"
+              "  C-g          cancel anything\n"
               "  C-x 0 / C-x 1 / C-x 2 / C-x 3   close / only / split windows\n"
               "  After a prefix key such as C-x, wait a moment to see what follows.\n"
               "  M-x agent-emacs-welcome   show this screen again\n"))
