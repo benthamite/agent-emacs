@@ -41,6 +41,10 @@ Agent Emacs can serve a page for reading and replying to your sessions from your
 
 Anyone in your tailnet can reach the page without logging in, so share your tailnet only with people you would hand your Mac to.
 
+## Report a bug or idea
+
+Run `M-x agent-report` (or `t b` in the agent menu), or tap Report on the phone, and describe the bug or the feature you want. It is filed as a GitHub issue for me. It needs the [GitHub CLI](https://cli.github.com) logged in (`gh auth login`), and tells you if it isn't.
+
 ## Develop
 
 `test/smoke-test.sh` installs Agent Emacs from scratch in a throwaway home directory and checks that every package is at its locked commit and that startup is clean. After changing packages, regenerate the lock file with `M-x elpaca-write-lock-file` and update the Elpaca commit pinned in `init.el` to match.
