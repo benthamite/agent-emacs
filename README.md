@@ -37,7 +37,7 @@ See the [`agent` manual](https://github.com/benthamite/agent) for every option.
 
 ## Android app
 
-Agent Emacs can serve a page for reading and replying to your sessions from your phone, over [Tailscale](https://tailscale.com). To turn it on, add `(agent-remote-mode 1)` to `user.el` and restart. Then open `http://<your Mac's Tailscale address>:8787/` on the phone (`tailscale ip -4` prints the address), or use the [Android app](https://github.com/benthamite/agent/releases/download/android-v1.3/agent-remote.apk).
+Agent Emacs can serve a page for reading and replying to your sessions from your phone, over [Tailscale](https://tailscale.com). To turn it on, add `(agent-remote-mode 1)` to `user.el` and restart. Then open `http://<your Mac's Tailscale address>:8787/` on the phone (`tailscale ip -4` prints the address), or use the [Android app](https://github.com/benthamite/agent/releases/download/android-v1.4/agent-remote.apk).
 
 Anyone in your tailnet can reach the page without logging in, so share your tailnet only with people you would hand your Mac to.
 
