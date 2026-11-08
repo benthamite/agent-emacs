@@ -1,8 +1,8 @@
 <p align="center"><img src="banner.svg" alt="Agent Emacs" width="690"></p>
 
-An Emacs set up for one job: running AI coding agents — [Claude Code](https://code.claude.com) and [Codex](https://developers.openai.com/codex) — side by side, with every session one keystroke away.
+An Emacs distro for one job: running AI coding agents — [Claude Code](https://code.claude.com) and [Codex](https://developers.openai.com/codex) — side by side, with every session one keystroke away.
 
-It is built around the [`agent`](https://github.com/benthamite/agent) package, with sensible defaults: the usual Mac shortcuts, a theme that follows your system's light or dark mode, modern completion, and files that refresh when an agent changes them. It runs as its own Emacs instance, so it leaves any Emacs configuration you already have alone.
+It is built around the [`agent`](https://github.com/benthamite/agent) package, with sensible defaults: the usual Mac shortcuts, a theme that follows your system’s light or dark mode, modern completion, and files that refresh when an agent changes them.
 
 ## Install (macOS)
 
