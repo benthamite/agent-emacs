@@ -138,6 +138,15 @@ link_command() {
   esac
 }
 
+# A locked screen hides every Emacs window, and App Nap then slows Emacs
+# so much that the phone page times out until the screen is unlocked.
+# The setting belongs to the Emacs app, so it covers every Emacs started
+# from it, and takes effect at its next launch.
+disable_app_nap() {
+  id=$(defaults read "$emacs_app/Contents/Info" CFBundleIdentifier 2>/dev/null) || return 0
+  defaults write "$id" NSAppSleepDisabled -bool YES
+}
+
 log_in() {
   if command -v claude >/dev/null 2>&1 && ! claude auth status >/dev/null 2>&1 &&
      ask "Log in to Claude Code now?"; then
@@ -155,6 +164,7 @@ install_missing
 get_configuration
 make_app
 link_command
+disable_app_nap
 log_in
 
 say "Agent Emacs is installed.  Start it from Spotlight or Launchpad (\"Agent Emacs\")."
