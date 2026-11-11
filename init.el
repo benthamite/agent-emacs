@@ -810,6 +810,63 @@ click on another line of a multi-line input still goes to Claude Code."
   (unless (server-running-p server-name)
     (server-start)))
 
+;;;; Updating
+
+(defconst agent-emacs-update-buffer-name "*Agent Emacs update*"
+  "Name of the buffer showing the output of `agent-emacs-update'.")
+
+(defun agent-emacs-update ()
+  "Update Agent Emacs to its newest version, then offer to restart.
+Download the newest configuration, then run its installer, which adds
+anything the new version needs outside Emacs.  The installer runs
+second so that it is the newest one, and it asks no questions here."
+  (interactive)
+  (let* ((default-directory user-emacs-directory)
+         (before (agent-emacs-git-head))
+         (buffer (get-buffer-create agent-emacs-update-buffer-name))
+         (process-environment
+          (append (list "AGENT_EMACS_NO_START=1"
+                        (concat "AGENT_EMACS_DIR="
+                                (directory-file-name user-emacs-directory)))
+                  process-environment)))
+    (with-current-buffer buffer
+      (let ((inhibit-read-only t))
+        (erase-buffer))
+      (special-mode))
+    (display-buffer buffer)
+    (make-process
+     :name "agent-emacs-update"
+     :buffer buffer
+     :command '("/bin/sh" "-c" "git pull --ff-only --no-progress && sh ./install.sh")
+     :sentinel (lambda (process _event)
+                 (when (memq (process-status process) '(exit signal))
+                   (agent-emacs-update-finished process before))))))
+
+(defun agent-emacs-git-head ()
+  "Return the commit Agent Emacs's configuration is at."
+  (let ((default-directory user-emacs-directory))
+    (string-trim (shell-command-to-string "git rev-parse HEAD"))))
+
+(defun agent-emacs-update-finished (process before)
+  "Report how the update run by PROCESS went, and offer to restart.
+BEFORE is the commit the configuration was at when the update began."
+  (let ((default-directory user-emacs-directory))
+    (cond
+     ((/= (process-exit-status process) 0)
+      (message "Agent Emacs could not update; see the %s buffer"
+               agent-emacs-update-buffer-name))
+     ((equal before (agent-emacs-git-head))
+      (message "Agent Emacs is already up to date"))
+     ((y-or-n-p
+       (concat "Agent Emacs is updated.  Restart now"
+               (unless (zerop (call-process "git" nil nil nil "diff" "--quiet"
+                                            before "HEAD" "--" "lockfile.el"))
+                 " (the first start rebuilds packages, which takes a few minutes)")
+               "? "))
+      (let ((confirm-kill-emacs nil))
+        (restart-emacs)))
+     (t (message "Agent Emacs will use the update the next time it starts")))))
+
 ;;;; Welcome screen
 
 (defconst agent-emacs-welcome-buffer-name "*Agent Emacs*"
@@ -881,7 +938,8 @@ Each ROW is (KEY TEXT...), or (:header TITLE...) for column titles.")
       (erase-buffer)
       (insert (propertize agent-emacs-welcome-banner 'face '(:height 1.3))
               "\n"
-              (propertize "M-x agent-emacs-welcome shows this screen again.\n"
+              (propertize (concat "M-x agent-emacs-welcome shows this screen again.\n"
+                                  "M-x agent-emacs-update updates Agent Emacs.\n")
                           'face 'shadow))
       (mapc #'agent-emacs-welcome-insert-section agent-emacs-welcome-sections))
     (special-mode)

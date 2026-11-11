@@ -22,7 +22,7 @@ On its first start, Agent Emacs offers to link three skills into `~/.claude/skil
 
 ## Update
 
-Run the install command again, then restart Agent Emacs. Package versions are pinned in `lockfile.el`, so everyone runs the versions this configuration was tested with.
+Run `M-x agent-emacs-update` in Agent Emacs. It downloads the newest version and offers to restart. If Agent Emacs says there is no such command, your copy predates it: run the install command again, then restart Agent Emacs. Package versions are pinned in `lockfile.el`, so everyone runs the versions this configuration was tested with.
 
 ## Customize
 
