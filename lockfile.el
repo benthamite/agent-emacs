@@ -1,7 +1,7 @@
 ((agent :source "elpaca-menu-lock-file" :recipe
         (:source "Init file" :package "agent" :id agent :host github :repo
                  "benthamite/agent" :type git :protocol https :inherit t :depth
-                 treeless :ref "0d2e037367c5b7604d9ad0278e501e5937a24505"))
+                 treeless :ref "893ae01192a2eb57ddd9c219ca855d0f5c6a49b0"))
  (agent-log :source "elpaca-menu-lock-file" :recipe
             (:source "Init file" :package "agent-log" :id agent-log :host github
                      :repo "benthamite/agent-log" :type git :protocol https
