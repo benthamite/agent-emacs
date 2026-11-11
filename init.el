@@ -857,15 +857,61 @@ BEFORE is the commit the configuration was at when the update began."
                agent-emacs-update-buffer-name))
      ((equal before (agent-emacs-git-head))
       (message "Agent Emacs is already up to date"))
-     ((y-or-n-p
-       (concat "Agent Emacs is updated.  Restart now"
-               (unless (zerop (call-process "git" nil nil nil "diff" "--quiet"
-                                            before "HEAD" "--" "lockfile.el"))
-                 " (the first start rebuilds packages, which takes a few minutes)")
-               "? "))
-      (let ((confirm-kill-emacs nil))
-        (restart-emacs)))
+     ((y-or-n-p (agent-emacs-restart-question before))
+      (agent-emacs-restart-reopening-sessions))
      (t (message "Agent Emacs will use the update the next time it starts")))))
+
+(defun agent-emacs-restart-question (before)
+  "Return the question asking whether to restart into the update.
+BEFORE is the commit the configuration was at when the update began."
+  (let ((sessions (length (agent-session-buffers))))
+    (concat "Agent Emacs is updated.  Restarting stops "
+            (if (zerop sessions)
+                "anything running in Emacs"
+              (format (concat "your %d open session%s and anything else "
+                              "running in Emacs; the sessions reopen afterwards")
+                      sessions (if (= sessions 1) "" "s")))
+            (unless (zerop (call-process "git" nil nil nil "diff" "--quiet"
+                                         before "HEAD" "--" "lockfile.el"))
+              ", and the first start rebuilds packages, which takes a few minutes")
+            ".  Restart now? ")))
+
+(defconst agent-emacs-reopen-marker
+  (expand-file-name "reopen-sessions" agent-emacs-var-directory)
+  "File asking the next start to reopen the sessions of the Emacs before it.")
+
+(defun agent-emacs-restart-reopening-sessions ()
+  "Restart Emacs, and reopen its open sessions once it is back.
+The restart question already said that running processes stop, so
+Emacs does not ask about them again.  The marker is left only as Emacs
+exits, so a restart called off at a later question does not make some
+other start reopen sessions."
+  (when (agent-session-buffers)
+    (add-hook 'kill-emacs-hook #'agent-emacs-leave-reopen-marker))
+  (unwind-protect
+      (let ((confirm-kill-emacs nil)
+            (confirm-kill-processes nil))
+        (restart-emacs))
+    (remove-hook 'kill-emacs-hook #'agent-emacs-leave-reopen-marker)))
+
+(defun agent-emacs-leave-reopen-marker ()
+  "Leave `agent-emacs-reopen-marker' for the next start to find."
+  (with-temp-file agent-emacs-reopen-marker))
+
+(defun agent-emacs-reopen-sessions ()
+  "Reopen the sessions that the restart into an update closed.
+`agent' records the sessions of the Emacs that closed last, so they are
+the ones the restart closed."
+  (when (file-exists-p agent-emacs-reopen-marker)
+    (delete-file agent-emacs-reopen-marker)
+    (condition-case err
+        (agent-restore-sessions 'previous)
+      (user-error (message "Agent Emacs could not reopen the sessions: %s"
+                           (error-message-string err))))))
+
+;; After `user.el' is loaded, since the sessions reopen under the accounts
+;; it may set.
+(add-hook 'elpaca-after-init-hook #'agent-emacs-reopen-sessions 90)
 
 ;;;; Welcome screen
 
