@@ -4,6 +4,8 @@ An Emacs distro for one job: running AI coding agents — [Claude Code](https://
 
 It is built around the [`agent`](https://github.com/benthamite/agent) package, with sensible defaults: the usual Mac shortcuts, a theme that follows your system’s light or dark mode, modern completion, and files that refresh when an agent changes them.
 
+![A Claude Code session with the agent menu open](screenshots/emacs.png)
+
 ## Install (macOS)
 
 With [Homebrew](https://brew.sh) installed, run this in a terminal:
@@ -38,6 +40,8 @@ See the [`agent` manual](https://stafforini.com/notes/agent) for every option.
 ## Android app
 
 Agent Emacs can serve a page for reading and replying to your sessions from your phone, over [Tailscale](https://tailscale.com). To turn it on, add `(agent-remote-mode 1)` to `user.el` and restart. Then open `http://<your Mac's Tailscale address>:8787/` on the phone (`tailscale ip -4` prints the address), or use the [Android app](https://github.com/benthamite/agent/releases/download/android-latest/agent-remote.apk).
+
+<p align="center"><img src="screenshots/phone.jpg" alt="The same session in the Android app" width="320"></p>
 
 The installer turns off macOS App Nap for Emacs, which would otherwise slow it so much while your screen is locked that the phone could not connect; it takes effect the next time Emacs starts.
 
