@@ -33,7 +33,7 @@ Put your own settings in `~/.config/agent-emacs/user.el`, which updates never to
                               ("work"     . "~/.claude-work")))
 ```
 
-See the [`agent` manual](https://github.com/benthamite/agent) for every option.
+See the [`agent` manual]([https://github.com/benthamite/agent](https://stafforini.com/notes/agent/)) for every option.
 
 ## Android app
 
