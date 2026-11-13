@@ -49,4 +49,4 @@ Anyone in your tailnet can reach the page without logging in, so share your tail
 
 ## Develop
 
-`test/smoke-test.sh` installs Agent Emacs from scratch in a throwaway home directory and checks that every package is at its locked commit and that startup is clean. After changing packages, regenerate the lock file with `M-x elpaca-write-lock-file` and update the Elpaca commit pinned in `init.el` to match.
+`test/smoke-test.sh` installs Agent Emacs from scratch in a throwaway home directory and checks that every package is at its locked commit and that startup is clean. After changing packages, regenerate the lock file with `M-x elpaca-write-lock-file` and update the Elpaca commit pinned in `init.el` to match. `init.el` overrides how Elpaca clones MELPA's recipes, because MELPA renamed its branch to `main` and Elpaca still asks for `master`; once Elpaca includes the fix ([progfolio/elpaca#586](https://github.com/progfolio/elpaca/pull/586)), pin a commit that has it and remove the override.

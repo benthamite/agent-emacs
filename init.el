@@ -72,6 +72,49 @@
 (add-hook 'after-init-hook #'elpaca-process-queues)
 (elpaca `(,@elpaca-order))
 
+;; TEMPORARY WORKAROUND: MELPA renamed its branch from master to main,
+;; and Elpaca still clones master, so building a new package directory
+;; fails with "couldn't find remote ref master".  This is Elpaca's own
+;; function with "master" replaced by "main", as in the upstream fix
+;; (https://github.com/progfolio/elpaca/pull/586).  Remove it once that
+;; fix is merged and the Elpaca commit in lockfile.el includes it.  The
+;; failed clone leaves a recipe directory with no recipes, which Elpaca
+;; never clones again, so that leftover is removed before MELPA is read.
+(defun agent-emacs-remove-failed-melpa-clone (&rest _)
+  "Delete a MELPA recipe directory left without recipes by a failed clone."
+  (let ((repo (expand-file-name "melpa/" elpaca-cache-directory)))
+    (when (and (file-directory-p repo)
+               (not (file-directory-p (expand-file-name "recipes/" repo))))
+      (delete-directory repo t))))
+
+(with-eval-after-load 'elpaca-menu-melpa
+  (advice-add 'elpaca-menu-melpa--index :before
+              #'agent-emacs-remove-failed-melpa-clone)
+  (defun elpaca-menu-melpa--clone (path)
+    "Clone MELPA recipes repo to PATH."
+    (let ((default-directory path))
+      (make-directory path t)
+      (make-directory (expand-file-name ".git/info/" path) t)
+      (message "Downloading MELPA recipes...")
+      (let* ((process-environment (append '("GIT_CONFIG_SYSTEM=/dev/null"
+                                            "GIT_CONFIG_GLOBAL=/dev/null")
+                                          process-environment))
+             (processes
+              (list
+               (elpaca-process-call "git" "init")
+               (elpaca-process-call "git" "config" "core.sparseCheckout" "true")
+               (with-temp-buffer
+                 (insert "recipes")
+                 (append-to-file (point-min) (point-max)
+                                 (expand-file-name ".git/info/sparse-checkout" path)))
+               (elpaca-process-call "git" "remote" "add" "origin" "https://github.com/melpa/melpa.git")
+               (elpaca-process-call "git" "pull" "--depth=1" "origin" "main")
+               (elpaca-process-call "git" "checkout" "main")
+               (elpaca-process-call "git" "branch" "--set-upstream-to" "origin/main" "main")))
+             (err (car (cl-remove-if #'zerop (delq nil processes) :key #'car))))
+        (when err (error "Unable to clone MELPA: %S" err))
+        (message "Downloading MELPA recipes...100%%")))))
+
 ;; Install the exact package versions this configuration was tested with.
 (when (file-exists-p agent-emacs-lock-file)
   (setq elpaca-lock-file agent-emacs-lock-file))
